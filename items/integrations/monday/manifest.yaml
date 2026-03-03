@@ -1,0 +1,39 @@
+id: monday-integration
+name: Monday.com Integration
+description: >
+  CLI tool for managing boards, items, and groups on Monday.com.
+  Gives agents direct access to Monday.com via the GraphQL API.
+category: integrations
+subcategory: project-management
+
+files:
+  - src: monday_cli.py
+    dest: scripts/integrations/monday/monday_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/monday/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: MONDAY_API_TOKEN
+    description: "Monday.com API token for authentication"
+    required: true
+
+tags:
+  - monday
+  - project-management
+  - boards
+  - tasks
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,45 @@
+id: confluence-integration
+name: Confluence Integration
+description: >
+  CLI tool for searching, creating, and updating Confluence pages and spaces.
+  Gives agents direct access to your Confluence instance via the REST API.
+category: integrations
+subcategory: documentation
+
+files:
+  - src: confluence_cli.py
+    dest: scripts/integrations/confluence/confluence_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/confluence/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: CONFLUENCE_BASE_URL
+    description: "Your Confluence instance URL (e.g., https://your-org.atlassian.net)"
+    required: true
+  - name: CONFLUENCE_EMAIL
+    description: "Email address for Confluence authentication"
+    required: true
+  - name: CONFLUENCE_API_TOKEN
+    description: "API token for Confluence authentication"
+    required: true
+
+tags:
+  - confluence
+  - documentation
+  - wiki
+  - atlassian
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

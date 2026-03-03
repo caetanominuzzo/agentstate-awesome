@@ -1,0 +1,43 @@
+id: upstash-integration
+name: Upstash Integration
+description: >
+  CLI tool for interacting with Upstash Redis via the REST API. Get, set,
+  delete keys, search patterns, and increment counters.
+category: integrations
+subcategory: databases
+
+files:
+  - src: upstash_cli.py
+    dest: scripts/integrations/upstash/upstash_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/upstash/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: UPSTASH_REDIS_REST_URL
+    description: "Upstash Redis REST URL"
+    required: true
+  - name: UPSTASH_REDIS_REST_TOKEN
+    description: "Upstash Redis REST token"
+    required: true
+
+tags:
+  - upstash
+  - databases
+  - redis
+  - key-value
+  - cache
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

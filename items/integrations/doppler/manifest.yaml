@@ -1,0 +1,39 @@
+id: doppler-integration
+name: Doppler Integration
+description: >
+  CLI tool for managing projects, configs, and secrets in Doppler.
+  Gives agents direct access to Doppler secrets management via the REST API.
+category: integrations
+subcategory: authentication
+
+files:
+  - src: doppler_cli.py
+    dest: scripts/integrations/doppler/doppler_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/doppler/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DOPPLER_TOKEN
+    description: "Doppler service token or personal token for authentication"
+    required: true
+
+tags:
+  - doppler
+  - secrets
+  - configuration
+  - environment
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

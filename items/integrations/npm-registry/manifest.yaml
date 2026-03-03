@@ -1,0 +1,39 @@
+id: npm-registry-integration
+name: npm Registry Integration
+description: >
+  CLI tool for searching packages, listing versions, and getting download stats from the npm registry.
+  Gives agents direct access to npm package data via the public REST API.
+category: integrations
+subcategory: package-registries
+
+files:
+  - src: npm_registry_cli.py
+    dest: scripts/integrations/npm-registry/npm_registry_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/npm-registry/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: NPM_TOKEN
+    description: "npm authentication token (optional, only needed for private packages)"
+    required: false
+
+tags:
+  - npm
+  - registry
+  - packages
+  - javascript
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

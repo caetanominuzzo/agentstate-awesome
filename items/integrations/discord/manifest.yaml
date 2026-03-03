@@ -1,0 +1,39 @@
+id: discord-integration
+name: Discord Integration
+description: >
+  CLI tool for sending messages and embeds to Discord channels via webhooks.
+  Gives agents the ability to post notifications and rich content to Discord.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: discord_cli.py
+    dest: scripts/integrations/discord/discord_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/discord/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DISCORD_WEBHOOK_URL
+    description: "Discord webhook URL for the target channel"
+    required: true
+
+tags:
+  - discord
+  - notifications
+  - messaging
+  - webhooks
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

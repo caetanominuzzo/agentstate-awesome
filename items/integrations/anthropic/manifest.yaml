@@ -1,0 +1,43 @@
+id: anthropic-integration
+name: Anthropic Integration
+description: >
+  CLI tool for interacting with Anthropic Claude models. Send chat messages
+  and count tokens via the official SDK.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: anthropic_cli.py
+    dest: scripts/integrations/anthropic/anthropic_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/anthropic/AGENTS.md
+
+python_dependencies:
+  - "anthropic>=0.18.0"
+
+env_vars:
+  - name: ANTHROPIC_API_KEY
+    description: "Anthropic API key"
+    required: true
+  - name: ANTHROPIC_MODEL
+    description: "Default model to use (default: claude-sonnet-4-20250514)"
+    required: false
+
+tags:
+  - anthropic
+  - ai-ml
+  - llm
+  - claude
+  - chat
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

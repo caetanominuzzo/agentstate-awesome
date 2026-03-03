@@ -1,0 +1,42 @@
+id: grafana-integration
+name: Grafana Integration
+description: >
+  CLI tool for managing Grafana dashboards, alerts, and datasource queries.
+  Gives agents direct access to your Grafana instance via the REST API.
+category: integrations
+subcategory: monitoring
+
+files:
+  - src: grafana_cli.py
+    dest: scripts/integrations/grafana/grafana_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/grafana/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: GRAFANA_URL
+    description: "Grafana instance URL (e.g., https://your-grafana.example.com)"
+    required: true
+  - name: GRAFANA_API_KEY
+    description: "Grafana API key or service account token"
+    required: true
+
+tags:
+  - grafana
+  - monitoring
+  - dashboards
+  - observability
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

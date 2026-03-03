@@ -1,0 +1,39 @@
+id: linear-integration
+name: Linear Integration
+description: >
+  CLI tool for managing Linear issues via the GraphQL API. Create, update,
+  list, and inspect issues across teams and projects.
+category: integrations
+subcategory: project-management
+
+files:
+  - src: linear_cli.py
+    dest: scripts/integrations/linear/linear_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/linear/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: LINEAR_API_KEY
+    description: "Linear personal API key"
+    required: true
+
+tags:
+  - linear
+  - project-management
+  - issue-tracking
+  - task-management
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

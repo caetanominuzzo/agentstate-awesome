@@ -1,0 +1,42 @@
+id: vault-integration
+name: HashiCorp Vault Integration
+description: >
+  CLI tool for reading, writing, listing, and deleting secrets in HashiCorp Vault.
+  Gives agents direct access to Vault via the REST API.
+category: integrations
+subcategory: authentication
+
+files:
+  - src: vault_cli.py
+    dest: scripts/integrations/vault/vault_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/vault/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: VAULT_ADDR
+    description: "Vault server address (e.g., https://vault.example.com)"
+    required: true
+  - name: VAULT_TOKEN
+    description: "Vault authentication token"
+    required: true
+
+tags:
+  - vault
+  - secrets
+  - authentication
+  - hashicorp
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

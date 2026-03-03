@@ -1,0 +1,39 @@
+id: railway-integration
+name: Railway Integration
+description: >
+  CLI tool for managing projects, services, and deployments on Railway.
+  Gives agents direct access to Railway via the GraphQL API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: railway_cli.py
+    dest: scripts/integrations/railway/railway_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/railway/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: RAILWAY_TOKEN
+    description: "Railway API token for authentication"
+    required: true
+
+tags:
+  - railway
+  - deployment
+  - hosting
+  - ci-cd
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

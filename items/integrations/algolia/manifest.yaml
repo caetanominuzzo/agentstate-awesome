@@ -1,0 +1,42 @@
+id: algolia-integration
+name: Algolia Integration
+description: >
+  CLI tool for searching indices, listing indices, and managing objects in Algolia.
+  Gives agents direct access to Algolia search via the REST API.
+category: integrations
+subcategory: search
+
+files:
+  - src: algolia_cli.py
+    dest: scripts/integrations/algolia/algolia_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/algolia/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: ALGOLIA_APP_ID
+    description: "Algolia application ID"
+    required: true
+  - name: ALGOLIA_API_KEY
+    description: "Algolia API key (admin or search key depending on operation)"
+    required: true
+
+tags:
+  - algolia
+  - search
+  - indexing
+  - full-text-search
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

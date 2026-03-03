@@ -1,0 +1,39 @@
+id: fly-io-integration
+name: Fly.io Integration
+description: >
+  CLI tool for managing apps and machines on Fly.io.
+  Gives agents direct access to Fly.io via the Machines REST API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: fly_io_cli.py
+    dest: scripts/integrations/fly-io/fly_io_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/fly-io/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: FLY_API_TOKEN
+    description: "Fly.io API token for authentication"
+    required: true
+
+tags:
+  - fly-io
+  - deployment
+  - hosting
+  - containers
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

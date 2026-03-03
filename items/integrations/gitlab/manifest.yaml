@@ -1,0 +1,42 @@
+id: gitlab-integration
+name: GitLab Integration
+description: >
+  CLI tool for managing GitLab projects, merge requests, issues, and pipelines.
+  Gives agents direct access to your GitLab instance via the REST API.
+category: integrations
+subcategory: code-hosting
+
+files:
+  - src: gitlab_cli.py
+    dest: scripts/integrations/gitlab/gitlab_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/gitlab/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: GITLAB_TOKEN
+    description: "GitLab personal access token"
+    required: true
+  - name: GITLAB_BASE_URL
+    description: "GitLab instance URL (default: https://gitlab.com)"
+    required: false
+
+tags:
+  - gitlab
+  - code-hosting
+  - version-control
+  - ci-cd
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

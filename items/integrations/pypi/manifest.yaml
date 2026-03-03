@@ -1,0 +1,36 @@
+id: pypi-integration
+name: PyPI Integration
+description: >
+  CLI tool for searching packages, listing versions, and getting release data from PyPI.
+  Gives agents direct access to Python package data via the public PyPI JSON API.
+category: integrations
+subcategory: package-registries
+
+files:
+  - src: pypi_cli.py
+    dest: scripts/integrations/pypi/pypi_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/pypi/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars: []
+
+tags:
+  - pypi
+  - registry
+  - packages
+  - python
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

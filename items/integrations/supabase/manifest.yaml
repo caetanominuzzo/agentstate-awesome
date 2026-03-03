@@ -1,0 +1,43 @@
+id: supabase-integration
+name: Supabase Integration
+description: >
+  CLI tool for querying, inserting, and updating data in Supabase via the
+  PostgREST API. Manage tables and rows directly from the command line.
+category: integrations
+subcategory: databases
+
+files:
+  - src: supabase_cli.py
+    dest: scripts/integrations/supabase/supabase_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/supabase/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SUPABASE_URL
+    description: "Supabase project URL (e.g., https://xxxx.supabase.co)"
+    required: true
+  - name: SUPABASE_KEY
+    description: "Supabase anon or service role API key"
+    required: true
+
+tags:
+  - supabase
+  - databases
+  - postgres
+  - rest-api
+  - backend
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

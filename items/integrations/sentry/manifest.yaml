@@ -1,0 +1,45 @@
+id: sentry-integration
+name: Sentry Integration
+description: >
+  CLI tool for listing, inspecting, and resolving Sentry issues and projects.
+  Gives agents direct access to error monitoring data via the Sentry API.
+category: integrations
+subcategory: monitoring
+
+files:
+  - src: sentry_cli.py
+    dest: scripts/integrations/sentry/sentry_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/sentry/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SENTRY_AUTH_TOKEN
+    description: "Sentry authentication token (Auth Token or Internal Integration token)"
+    required: true
+  - name: SENTRY_ORG
+    description: "Sentry organization slug"
+    required: true
+  - name: SENTRY_PROJECT
+    description: "Default Sentry project slug (used when --project is not specified)"
+    required: false
+
+tags:
+  - sentry
+  - monitoring
+  - error-tracking
+  - observability
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

@@ -1,0 +1,40 @@
+id: github-integration
+name: GitHub Integration
+description: >
+  CLI tool for managing GitHub repositories, issues, and pull requests.
+  Gives agents direct access to GitHub via the REST API.
+category: integrations
+subcategory: code-hosting
+
+files:
+  - src: github_cli.py
+    dest: scripts/integrations/github/github_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/github/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: GITHUB_TOKEN
+    description: "GitHub Personal Access Token or fine-grained token"
+    required: true
+
+tags:
+  - github
+  - code-hosting
+  - repositories
+  - pull-requests
+  - issues
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

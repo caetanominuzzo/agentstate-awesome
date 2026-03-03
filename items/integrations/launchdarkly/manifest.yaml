@@ -1,0 +1,42 @@
+id: launchdarkly-integration
+name: LaunchDarkly Integration
+description: >
+  CLI tool for managing feature flags, environments, and flag toggles in LaunchDarkly.
+  Gives agents direct access to LaunchDarkly via the REST API.
+category: integrations
+subcategory: feature-flags
+
+files:
+  - src: launchdarkly_cli.py
+    dest: scripts/integrations/launchdarkly/launchdarkly_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/launchdarkly/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: LAUNCHDARKLY_API_KEY
+    description: "LaunchDarkly API access token"
+    required: true
+  - name: LAUNCHDARKLY_PROJECT_KEY
+    description: "Default project key (default: default)"
+    required: false
+
+tags:
+  - launchdarkly
+  - feature-flags
+  - toggles
+  - experimentation
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

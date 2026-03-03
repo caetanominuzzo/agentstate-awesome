@@ -1,0 +1,39 @@
+id: slack-integration
+name: Slack Integration
+description: >
+  CLI tool for sending messages, listing channels, and posting rich block messages
+  to Slack. Gives agents direct access to Slack workspaces via the Web API.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: slack_cli.py
+    dest: scripts/integrations/slack/slack_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/slack/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SLACK_BOT_TOKEN
+    description: "Slack Bot User OAuth Token (xoxb-...)"
+    required: true
+
+tags:
+  - slack
+  - notifications
+  - messaging
+  - chat
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

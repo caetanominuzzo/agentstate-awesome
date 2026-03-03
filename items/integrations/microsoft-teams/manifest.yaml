@@ -1,0 +1,39 @@
+id: microsoft-teams-integration
+name: Microsoft Teams Integration
+description: >
+  CLI tool for sending messages and adaptive cards to Microsoft Teams channels
+  via incoming webhooks. Gives agents direct notification capabilities.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: microsoft_teams_cli.py
+    dest: scripts/integrations/microsoft-teams/microsoft_teams_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/microsoft-teams/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: TEAMS_WEBHOOK_URL
+    description: "Microsoft Teams incoming webhook URL"
+    required: true
+
+tags:
+  - microsoft-teams
+  - notifications
+  - messaging
+  - webhooks
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

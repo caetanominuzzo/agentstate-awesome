@@ -1,0 +1,39 @@
+id: circleci-integration
+name: CircleCI Integration
+description: >
+  CLI tool for managing CircleCI pipelines, workflows, and jobs.
+  Gives agents direct access to your CircleCI projects via the REST API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: circleci_cli.py
+    dest: scripts/integrations/circleci/circleci_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/circleci/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: CIRCLECI_TOKEN
+    description: "CircleCI personal API token"
+    required: true
+
+tags:
+  - circleci
+  - ci-cd
+  - pipelines
+  - continuous-integration
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,39 @@
+id: sendgrid-integration
+name: SendGrid Integration
+description: >
+  CLI tool for sending emails via the SendGrid API. Supports plain text
+  and HTML emails with full sender/recipient configuration.
+category: integrations
+subcategory: email
+
+files:
+  - src: sendgrid_cli.py
+    dest: scripts/integrations/sendgrid/sendgrid_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/sendgrid/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SENDGRID_API_KEY
+    description: "SendGrid API key for authentication"
+    required: true
+
+tags:
+  - sendgrid
+  - email
+  - notifications
+  - transactional-email
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

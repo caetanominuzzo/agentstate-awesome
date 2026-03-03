@@ -1,0 +1,42 @@
+id: webhook-integration
+name: Webhook Integration
+description: >
+  CLI tool for sending data to arbitrary webhook URLs with optional HMAC
+  signature verification. A generic integration for any webhook-based service.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: webhook_cli.py
+    dest: scripts/integrations/webhook/webhook_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/webhook/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: WEBHOOK_URL
+    description: "The webhook endpoint URL to send data to"
+    required: true
+  - name: WEBHOOK_SECRET
+    description: "Secret key for HMAC-SHA256 signature (sent as X-Signature-256 header)"
+    required: false
+
+tags:
+  - webhook
+  - notifications
+  - generic
+  - http
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

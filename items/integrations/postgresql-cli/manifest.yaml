@@ -1,0 +1,39 @@
+id: postgresql-cli-integration
+name: PostgreSQL CLI Integration
+description: >
+  CLI tool for querying and managing PostgreSQL databases.
+  Gives agents direct access to your PostgreSQL instance via psycopg2.
+category: integrations
+subcategory: databases
+
+files:
+  - src: postgresql_cli.py
+    dest: scripts/integrations/postgresql-cli/postgresql_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/postgresql-cli/AGENTS.md
+
+python_dependencies:
+  - "psycopg2-binary>=2.9.0"
+
+env_vars:
+  - name: POSTGRES_URL
+    description: "PostgreSQL connection URL (e.g., postgresql://user:pass@host:5432/db)"
+    required: true
+
+tags:
+  - postgresql
+  - databases
+  - sql
+  - relational
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

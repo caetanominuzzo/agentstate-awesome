@@ -1,0 +1,42 @@
+id: groq-integration
+name: Groq Integration
+description: >
+  CLI tool for chatting with Groq-hosted LLMs and listing available models.
+  Gives agents direct access to Groq's ultra-fast inference API via the official SDK.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: groq_cli.py
+    dest: scripts/integrations/groq/groq_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/groq/AGENTS.md
+
+python_dependencies:
+  - "groq>=0.4.0"
+
+env_vars:
+  - name: GROQ_API_KEY
+    description: "Groq API key for authentication"
+    required: true
+  - name: GROQ_MODEL
+    description: "Model to use for chat completions (default: llama-3.3-70b-versatile)"
+    required: false
+
+tags:
+  - groq
+  - ai
+  - llm
+  - inference
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

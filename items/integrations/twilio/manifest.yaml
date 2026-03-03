@@ -1,0 +1,45 @@
+id: twilio-integration
+name: Twilio Integration
+description: >
+  CLI tool for sending SMS and WhatsApp messages via Twilio.
+  Gives agents direct access to Twilio messaging via the REST API.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: twilio_cli.py
+    dest: scripts/integrations/twilio/twilio_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/twilio/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: TWILIO_ACCOUNT_SID
+    description: "Twilio Account SID"
+    required: true
+  - name: TWILIO_AUTH_TOKEN
+    description: "Twilio Auth Token"
+    required: true
+  - name: TWILIO_FROM_NUMBER
+    description: "Twilio phone number to send from (e.g., +15551234567)"
+    required: true
+
+tags:
+  - twilio
+  - notifications
+  - sms
+  - whatsapp
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

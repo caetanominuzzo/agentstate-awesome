@@ -1,0 +1,45 @@
+id: zendesk-integration
+name: Zendesk Integration
+description: >
+  CLI tool for managing Zendesk tickets and searching support data.
+  Gives agents direct access to your Zendesk instance via the REST API.
+category: integrations
+subcategory: crm-support
+
+files:
+  - src: zendesk_cli.py
+    dest: scripts/integrations/zendesk/zendesk_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/zendesk/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: ZENDESK_SUBDOMAIN
+    description: "Zendesk subdomain (e.g., 'mycompany' for mycompany.zendesk.com)"
+    required: true
+  - name: ZENDESK_EMAIL
+    description: "Zendesk agent email address"
+    required: true
+  - name: ZENDESK_API_TOKEN
+    description: "Zendesk API token"
+    required: true
+
+tags:
+  - zendesk
+  - crm
+  - support
+  - ticketing
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

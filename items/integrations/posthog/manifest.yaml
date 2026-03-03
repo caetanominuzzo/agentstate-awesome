@@ -1,0 +1,43 @@
+id: posthog-integration
+name: PostHog Integration
+description: >
+  CLI tool for capturing events, running queries, and listing feature flags
+  in PostHog. Gives agents access to product analytics data.
+category: integrations
+subcategory: analytics
+
+files:
+  - src: posthog_cli.py
+    dest: scripts/integrations/posthog/posthog_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/posthog/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: POSTHOG_API_KEY
+    description: "PostHog personal API key"
+    required: true
+  - name: POSTHOG_HOST
+    description: "PostHog instance URL (default: https://app.posthog.com)"
+    required: false
+
+tags:
+  - posthog
+  - analytics
+  - product-analytics
+  - feature-flags
+  - events
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,39 @@
+id: render-integration
+name: Render Integration
+description: >
+  CLI tool for managing services, deployments, and environment variables on Render.
+  Gives agents direct access to Render via the REST API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: render_cli.py
+    dest: scripts/integrations/render/render_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/render/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: RENDER_API_KEY
+    description: "Render API key for authentication"
+    required: true
+
+tags:
+  - render
+  - deployment
+  - hosting
+  - ci-cd
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

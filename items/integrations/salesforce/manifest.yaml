@@ -1,0 +1,42 @@
+id: salesforce-integration
+name: Salesforce Integration
+description: >
+  CLI tool for querying and managing Salesforce records via SOQL and REST API.
+  Gives agents direct access to your Salesforce org via the REST API.
+category: integrations
+subcategory: crm-support
+
+files:
+  - src: salesforce_cli.py
+    dest: scripts/integrations/salesforce/salesforce_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/salesforce/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SALESFORCE_INSTANCE_URL
+    description: "Salesforce instance URL (e.g., https://your-org.my.salesforce.com)"
+    required: true
+  - name: SALESFORCE_ACCESS_TOKEN
+    description: "Salesforce OAuth access token"
+    required: true
+
+tags:
+  - salesforce
+  - crm
+  - sales
+  - enterprise
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

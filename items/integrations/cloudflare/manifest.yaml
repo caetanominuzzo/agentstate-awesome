@@ -1,0 +1,40 @@
+id: cloudflare-integration
+name: Cloudflare Integration
+description: >
+  CLI tool for managing Cloudflare zones, DNS records, and Workers.
+  Gives agents direct access to Cloudflare infrastructure via the v4 API.
+category: integrations
+subcategory: cloud-infrastructure
+
+files:
+  - src: cloudflare_cli.py
+    dest: scripts/integrations/cloudflare/cloudflare_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/cloudflare/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: CLOUDFLARE_API_TOKEN
+    description: "Cloudflare API token with appropriate permissions"
+    required: true
+
+tags:
+  - cloudflare
+  - cloud-infrastructure
+  - dns
+  - cdn
+  - workers
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

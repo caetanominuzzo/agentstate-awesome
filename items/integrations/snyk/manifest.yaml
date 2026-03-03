@@ -1,0 +1,42 @@
+id: snyk-integration
+name: Snyk Integration
+description: >
+  CLI tool for listing organizations, projects, and security issues in Snyk.
+  Gives agents direct access to your Snyk security data via the REST API.
+category: integrations
+subcategory: security
+
+files:
+  - src: snyk_cli.py
+    dest: scripts/integrations/snyk/snyk_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/snyk/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: SNYK_TOKEN
+    description: "Snyk API token for authentication"
+    required: true
+  - name: SNYK_ORG_ID
+    description: "Default Snyk organization ID"
+    required: false
+
+tags:
+  - snyk
+  - security
+  - vulnerabilities
+  - sca
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

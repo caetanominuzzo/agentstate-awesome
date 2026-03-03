@@ -1,0 +1,42 @@
+id: docker-hub-integration
+name: Docker Hub Integration
+description: >
+  CLI tool for listing repositories, tags, and searching images on Docker Hub.
+  Gives agents direct access to Docker Hub via the REST API with JWT authentication.
+category: integrations
+subcategory: cloud-infrastructure
+
+files:
+  - src: docker_hub_cli.py
+    dest: scripts/integrations/docker-hub/docker_hub_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/docker-hub/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DOCKERHUB_USERNAME
+    description: "Docker Hub username for authentication"
+    required: true
+  - name: DOCKERHUB_TOKEN
+    description: "Docker Hub personal access token or password"
+    required: true
+
+tags:
+  - docker
+  - containers
+  - registry
+  - docker-hub
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,40 @@
+id: pagerduty-integration
+name: PagerDuty Integration
+description: >
+  CLI tool for managing PagerDuty incidents. List, create, acknowledge, and
+  resolve incidents directly from the command line.
+category: integrations
+subcategory: monitoring
+
+files:
+  - src: pagerduty_cli.py
+    dest: scripts/integrations/pagerduty/pagerduty_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/pagerduty/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: PAGERDUTY_API_KEY
+    description: "PagerDuty REST API key (v2)"
+    required: true
+
+tags:
+  - pagerduty
+  - monitoring
+  - incidents
+  - on-call
+  - alerting
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

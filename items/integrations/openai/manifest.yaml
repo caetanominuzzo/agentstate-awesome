@@ -1,0 +1,43 @@
+id: openai-integration
+name: OpenAI Integration
+description: >
+  CLI tool for interacting with OpenAI models. Send chat completions,
+  generate embeddings, and list available models via the official SDK.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: openai_cli.py
+    dest: scripts/integrations/openai/openai_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/openai/AGENTS.md
+
+python_dependencies:
+  - "openai>=1.6.0"
+
+env_vars:
+  - name: OPENAI_API_KEY
+    description: "OpenAI API key"
+    required: true
+  - name: OPENAI_MODEL
+    description: "Default model to use (default: gpt-4o)"
+    required: false
+
+tags:
+  - openai
+  - ai-ml
+  - llm
+  - chat
+  - embeddings
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

@@ -1,0 +1,42 @@
+id: airtable-integration
+name: Airtable Integration
+description: >
+  CLI tool for listing, creating, updating, and retrieving records in Airtable bases.
+  Gives agents direct access to your Airtable data via the REST API.
+category: integrations
+subcategory: databases
+
+files:
+  - src: airtable_cli.py
+    dest: scripts/integrations/airtable/airtable_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/airtable/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: AIRTABLE_API_KEY
+    description: "Airtable personal access token or API key"
+    required: true
+  - name: AIRTABLE_BASE_ID
+    description: "The ID of your Airtable base (e.g., appXXXXXXXXXXXXXX)"
+    required: true
+
+tags:
+  - airtable
+  - databases
+  - spreadsheet
+  - no-code
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

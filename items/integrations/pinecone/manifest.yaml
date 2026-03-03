@@ -1,0 +1,39 @@
+id: pinecone-integration
+name: Pinecone Integration
+description: >
+  CLI tool for managing Pinecone vector database indexes, upserting, querying, and deleting vectors.
+  Gives agents direct access to Pinecone via the official SDK.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: pinecone_cli.py
+    dest: scripts/integrations/pinecone/pinecone_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/pinecone/AGENTS.md
+
+python_dependencies:
+  - "pinecone-client>=3.0.0"
+
+env_vars:
+  - name: PINECONE_API_KEY
+    description: "Pinecone API key for authentication"
+    required: true
+
+tags:
+  - pinecone
+  - vector-database
+  - ai
+  - embeddings
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

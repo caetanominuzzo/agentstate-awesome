@@ -1,0 +1,40 @@
+id: neon-integration
+name: Neon Integration
+description: >
+  CLI tool for managing Neon serverless Postgres projects, branches, and
+  endpoints. Inspect and manage database infrastructure via the Neon API.
+category: integrations
+subcategory: databases
+
+files:
+  - src: neon_cli.py
+    dest: scripts/integrations/neon/neon_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/neon/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: NEON_API_KEY
+    description: "Neon API key"
+    required: true
+
+tags:
+  - neon
+  - databases
+  - postgres
+  - serverless
+  - branching
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

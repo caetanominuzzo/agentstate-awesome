@@ -1,0 +1,42 @@
+id: trello-integration
+name: Trello Integration
+description: >
+  CLI tool for managing Trello boards, lists, and cards.
+  Gives agents direct access to your Trello workspace via the REST API.
+category: integrations
+subcategory: project-management
+
+files:
+  - src: trello_cli.py
+    dest: scripts/integrations/trello/trello_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/trello/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: TRELLO_API_KEY
+    description: "Trello API key"
+    required: true
+  - name: TRELLO_TOKEN
+    description: "Trello authorization token"
+    required: true
+
+tags:
+  - trello
+  - project-management
+  - kanban
+  - boards
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

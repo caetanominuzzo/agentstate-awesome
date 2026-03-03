@@ -1,0 +1,42 @@
+id: new-relic-integration
+name: New Relic Integration
+description: >
+  CLI tool for querying NRQL, listing applications, and managing alert policies in New Relic.
+  Gives agents direct access to New Relic via the REST API and NerdGraph GraphQL API.
+category: integrations
+subcategory: monitoring
+
+files:
+  - src: new_relic_cli.py
+    dest: scripts/integrations/new-relic/new_relic_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/new-relic/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: NEW_RELIC_API_KEY
+    description: "New Relic User API key for authentication"
+    required: true
+  - name: NEW_RELIC_ACCOUNT_ID
+    description: "New Relic account ID"
+    required: true
+
+tags:
+  - new-relic
+  - monitoring
+  - observability
+  - apm
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

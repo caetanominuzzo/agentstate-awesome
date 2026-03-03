@@ -1,0 +1,39 @@
+id: asana-integration
+name: Asana Integration
+description: >
+  CLI tool for managing Asana workspaces, projects, and tasks.
+  Gives agents direct access to your Asana workspace via the REST API.
+category: integrations
+subcategory: project-management
+
+files:
+  - src: asana_cli.py
+    dest: scripts/integrations/asana/asana_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/asana/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: ASANA_ACCESS_TOKEN
+    description: "Asana personal access token"
+    required: true
+
+tags:
+  - asana
+  - project-management
+  - tasks
+  - productivity
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,42 @@
+id: google-gemini-integration
+name: Google Gemini Integration
+description: >
+  CLI tool for chatting with Google Gemini models and listing available models.
+  Gives agents direct access to the Gemini API via the official Google SDK.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: google_gemini_cli.py
+    dest: scripts/integrations/google-gemini/google_gemini_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/google-gemini/AGENTS.md
+
+python_dependencies:
+  - "google-generativeai>=0.3.0"
+
+env_vars:
+  - name: GEMINI_API_KEY
+    description: "Google Gemini API key for authentication"
+    required: true
+  - name: GEMINI_MODEL
+    description: "Model to use for generation (default: gemini-2.0-flash)"
+    required: false
+
+tags:
+  - gemini
+  - google
+  - ai
+  - llm
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

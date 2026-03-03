@@ -1,0 +1,45 @@
+id: bitbucket-integration
+name: Bitbucket Integration
+description: >
+  CLI tool for managing Bitbucket repositories and pull requests.
+  Gives agents direct access to your Bitbucket workspace via the REST API.
+category: integrations
+subcategory: code-hosting
+
+files:
+  - src: bitbucket_cli.py
+    dest: scripts/integrations/bitbucket/bitbucket_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/bitbucket/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: BITBUCKET_USERNAME
+    description: "Bitbucket username"
+    required: true
+  - name: BITBUCKET_APP_PASSWORD
+    description: "Bitbucket app password"
+    required: true
+  - name: BITBUCKET_WORKSPACE
+    description: "Default Bitbucket workspace slug"
+    required: false
+
+tags:
+  - bitbucket
+  - code-hosting
+  - version-control
+  - pull-requests
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

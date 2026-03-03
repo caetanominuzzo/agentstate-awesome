@@ -1,0 +1,39 @@
+id: figma-integration
+name: Figma Integration
+description: >
+  CLI tool for retrieving Figma files, comments, versions, and exporting images.
+  Gives agents direct access to your Figma design data via the REST API.
+category: integrations
+subcategory: design
+
+files:
+  - src: figma_cli.py
+    dest: scripts/integrations/figma/figma_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/figma/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: FIGMA_ACCESS_TOKEN
+    description: "Figma personal access token for API authentication"
+    required: true
+
+tags:
+  - figma
+  - design
+  - ui
+  - prototyping
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

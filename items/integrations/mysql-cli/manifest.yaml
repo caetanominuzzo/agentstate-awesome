@@ -1,0 +1,51 @@
+id: mysql-cli-integration
+name: MySQL CLI Integration
+description: >
+  CLI tool for querying and managing MySQL databases.
+  Gives agents direct access to your MySQL instance via mysql-connector-python.
+category: integrations
+subcategory: databases
+
+files:
+  - src: mysql_cli.py
+    dest: scripts/integrations/mysql-cli/mysql_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/mysql-cli/AGENTS.md
+
+python_dependencies:
+  - "mysql-connector-python>=8.1.0"
+
+env_vars:
+  - name: MYSQL_HOST
+    description: "MySQL server hostname"
+    required: true
+  - name: MYSQL_USER
+    description: "MySQL username"
+    required: true
+  - name: MYSQL_PASSWORD
+    description: "MySQL password"
+    required: true
+  - name: MYSQL_DATABASE
+    description: "MySQL database name"
+    required: true
+  - name: MYSQL_PORT
+    description: "MySQL port (default: 3306)"
+    required: false
+
+tags:
+  - mysql
+  - databases
+  - sql
+  - relational
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

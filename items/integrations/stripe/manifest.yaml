@@ -1,0 +1,39 @@
+id: stripe-integration
+name: Stripe Integration
+description: >
+  CLI tool for managing Stripe customers, charges, subscriptions, and balance.
+  Gives agents direct access to your Stripe account via the Stripe SDK.
+category: integrations
+subcategory: finance
+
+files:
+  - src: stripe_cli.py
+    dest: scripts/integrations/stripe/stripe_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/stripe/AGENTS.md
+
+python_dependencies:
+  - "stripe>=7.0.0"
+
+env_vars:
+  - name: STRIPE_SECRET_KEY
+    description: "Stripe secret API key (starts with sk_)"
+    required: true
+
+tags:
+  - stripe
+  - finance
+  - payments
+  - billing
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

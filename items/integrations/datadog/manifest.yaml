@@ -1,0 +1,46 @@
+id: datadog-integration
+name: Datadog Integration
+description: >
+  CLI tool for querying metrics, listing monitors, and searching logs in Datadog.
+  Gives agents direct access to monitoring and observability data via the Datadog API.
+category: integrations
+subcategory: monitoring
+
+files:
+  - src: datadog_cli.py
+    dest: scripts/integrations/datadog/datadog_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/datadog/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DATADOG_API_KEY
+    description: "Datadog API key"
+    required: true
+  - name: DATADOG_APP_KEY
+    description: "Datadog Application key"
+    required: true
+  - name: DATADOG_SITE
+    description: "Datadog site (default: datadoghq.com)"
+    required: false
+
+tags:
+  - datadog
+  - monitoring
+  - metrics
+  - logs
+  - observability
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

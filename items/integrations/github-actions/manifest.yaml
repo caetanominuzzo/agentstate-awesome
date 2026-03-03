@@ -1,0 +1,40 @@
+id: github-actions-integration
+name: GitHub Actions Integration
+description: >
+  CLI tool for managing GitHub Actions workflows and runs. List workflows,
+  trigger dispatches, inspect runs, and cancel in-progress jobs.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: github_actions_cli.py
+    dest: scripts/integrations/github-actions/github_actions_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/github-actions/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: GITHUB_TOKEN
+    description: "GitHub Personal Access Token with actions scope"
+    required: true
+
+tags:
+  - github-actions
+  - ci-cd
+  - workflows
+  - automation
+  - github
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

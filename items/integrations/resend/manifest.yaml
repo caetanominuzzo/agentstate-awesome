@@ -1,0 +1,39 @@
+id: resend-integration
+name: Resend Integration
+description: >
+  CLI tool for sending emails and listing sent emails via the Resend API.
+  A modern email API for developers with simple REST endpoints.
+category: integrations
+subcategory: email
+
+files:
+  - src: resend_cli.py
+    dest: scripts/integrations/resend/resend_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/resend/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: RESEND_API_KEY
+    description: "Resend API key (re_...)"
+    required: true
+
+tags:
+  - resend
+  - email
+  - notifications
+  - transactional-email
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

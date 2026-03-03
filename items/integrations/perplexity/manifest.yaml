@@ -1,0 +1,42 @@
+id: perplexity-integration
+name: Perplexity Integration
+description: >
+  CLI tool for searching and chatting with Perplexity AI's models.
+  Gives agents direct access to Perplexity's search-augmented AI via the OpenAI-compatible API.
+category: integrations
+subcategory: ai-ml
+
+files:
+  - src: perplexity_cli.py
+    dest: scripts/integrations/perplexity/perplexity_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/perplexity/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: PERPLEXITY_API_KEY
+    description: "Perplexity API key for authentication"
+    required: true
+  - name: PERPLEXITY_MODEL
+    description: "Model to use for completions (default: sonar)"
+    required: false
+
+tags:
+  - perplexity
+  - ai
+  - search
+  - llm
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

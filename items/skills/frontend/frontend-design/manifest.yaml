@@ -14,7 +14,6 @@ env_vars: []
 tags:
   - frontend
   - design
-  - frontend
 
 tech_tags:
   - javascript

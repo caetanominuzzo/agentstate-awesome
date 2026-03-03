@@ -1,0 +1,40 @@
+id: vercel-integration
+name: Vercel Integration
+description: >
+  CLI tool for managing Vercel projects and deployments. List projects,
+  inspect deployments, and trigger new deploys via the Vercel API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: vercel_cli.py
+    dest: scripts/integrations/vercel/vercel_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/vercel/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: VERCEL_TOKEN
+    description: "Vercel authentication token"
+    required: true
+
+tags:
+  - vercel
+  - ci-cd
+  - deployments
+  - hosting
+  - serverless
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

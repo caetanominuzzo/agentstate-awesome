@@ -1,0 +1,40 @@
+id: netlify-integration
+name: Netlify Integration
+description: >
+  CLI tool for managing Netlify sites and deploys. List sites, inspect deploy
+  status, and trigger new builds via the Netlify API.
+category: integrations
+subcategory: ci-cd
+
+files:
+  - src: netlify_cli.py
+    dest: scripts/integrations/netlify/netlify_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/netlify/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: NETLIFY_AUTH_TOKEN
+    description: "Netlify personal access token"
+    required: true
+
+tags:
+  - netlify
+  - ci-cd
+  - deployments
+  - hosting
+  - jamstack
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original
