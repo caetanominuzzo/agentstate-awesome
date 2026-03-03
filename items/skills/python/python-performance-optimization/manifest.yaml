@@ -1,0 +1,33 @@
+id: python-performance-optimization
+name: Python Performance Optimization
+description: "Python optimization techniques"
+category: skills
+subcategory: python
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/python-performance-optimization.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - python
+  - performance
+  - optimization
+  - python
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "wshobson/agents"
+  path: "plugins/python-development/skills/python-performance-optimization/SKILL.md"
+  last_synced: "2026-03-03"

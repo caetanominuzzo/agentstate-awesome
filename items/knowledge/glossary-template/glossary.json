@@ -1,0 +1,32 @@
+{
+  "terms": {
+    "example_term": {
+      "definition": "Description of what this term means in your organization",
+      "aliases": ["alt_name"],
+      "category": "domain"
+    }
+  },
+  "tools": {
+    "example_tool": {
+      "description": "What this tool does",
+      "url": "https://example.com",
+      "category": "monitoring"
+    }
+  },
+  "environments": {
+    "production": {
+      "description": "Live production environment",
+      "aliases": ["prod"]
+    },
+    "staging": {
+      "description": "Pre-production testing environment",
+      "aliases": ["stg", "hml"]
+    }
+  },
+  "workflows": {
+    "branch_naming": {
+      "pattern": "(feature|bugfix|hotfix)/PROJ-NUMBER-description",
+      "description": "Standard branch naming convention"
+    }
+  }
+}

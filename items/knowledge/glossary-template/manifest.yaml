@@ -1,0 +1,31 @@
+id: glossary-template
+name: Glossary Template
+description: >
+  Template for organizational glossary with terms, tools, environments,
+  and workflows that agents should understand.
+category: knowledge
+subcategory: templates
+
+files:
+  - src: glossary.json
+    dest: knowledge/glossary.json
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - glossary
+  - terminology
+  - vocabulary
+  - domain
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,31 @@
+id: mermaid-diagrams
+name: Mermaid Diagrams
+description: "Diagram creation"
+category: skills
+subcategory: documentation
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/mermaid-diagrams.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - mermaid
+  - diagrams
+  - documentation
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "softaworks/agent-toolkit"
+  path: "skills/mermaid-diagrams/SKILL.md"
+  last_synced: "2026-03-03"

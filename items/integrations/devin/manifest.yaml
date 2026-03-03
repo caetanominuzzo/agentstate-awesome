@@ -1,0 +1,41 @@
+id: devin-integration
+name: Devin API Client
+description: >
+  Spawn and monitor Devin sessions, manage knowledge notes via the Devin API.
+  Includes an HTTP client for sessions and a CLI for knowledge/breadcrumb management.
+category: integrations
+subcategory: agent-platforms
+
+files:
+  - src: devin_api_client.py
+    dest: scripts/integrations/devin/devin_api_client.py
+  - src: manage_knowledge.py
+    dest: scripts/integrations/devin/manage_knowledge.py
+  - src: AGENTS.md
+    dest: scripts/integrations/devin/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DEVIN_API
+    description: "Bearer token for Devin API"
+    required: true
+
+tags:
+  - devin
+  - api
+  - sessions
+  - knowledge
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - devin
+
+depends_on: []
+featured: true
+
+source:
+  type: original

@@ -1,0 +1,39 @@
+id: notion-integration
+name: Notion Integration
+description: >
+  Query and manage Notion pages and databases via the Notion API.
+  Supports searching, retrieving pages, and querying databases with filters.
+category: integrations
+subcategory: documentation
+
+files:
+  - src: notion_cli.py
+    dest: scripts/integrations/notion/notion_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/notion/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: NOTION_KEY
+    description: "Notion integration token"
+    required: true
+
+tags:
+  - notion
+  - documentation
+  - wiki
+  - knowledge-base
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

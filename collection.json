@@ -1,0 +1,1612 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-03-03T19:40:27Z",
+  "repo": "caetanominuzzo/agentstate-awesome",
+  "items": [
+    {
+      "id": "devin-integration",
+      "name": "Devin API Client",
+      "description": "Spawn and monitor Devin sessions, manage knowledge notes via the Devin API. Includes an HTTP client for sessions and a CLI for knowledge/breadcrumb management.\n",
+      "category": "integrations",
+      "subcategory": "agent-platforms",
+      "files": [
+        {
+          "src": "devin_api_client.py",
+          "dest": "scripts/integrations/devin/devin_api_client.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Shared Devin API HTTP client.\"\"\"\nimport os\nimport sys\nimport requests\n\n\nclass DevinAPIClient:\n    \"\"\"Client for Devin API interactions.\"\"\"\n\n    def __init__(self):\n        self.api_token = os.environ.get(\"DEVIN_API\")\n        if not self.api_token:\n            print(\n                '{\"error\": \"DEVIN_API environment variable not set\"}', file=sys.stderr\n            )\n            sys.exit(1)\n\n        self.base_url = \"https://api.devin.ai/v1\"\n        self.headers = {\n            \"Authorization\": f\"Bearer {self.api_token}\",\n            \"Content-Type\": \"application/json\",\n        }\n\n    def spawn_session(self, repo, task, context=None):\n        \"\"\"Spawn a new Devin session.\"\"\"\n        payload = {\"repo\": repo, \"task\": task}\n        if context:\n            payload[\"context\"] = context\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/sessions\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\"error\": str(e)}\n\n    def get_session_status(self, session_id):\n        \"\"\"Get status of a Devin session.\"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/sessions/{session_id}\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\"error\": str(e)}\n"
+        },
+        {
+          "src": "manage_knowledge.py",
+          "dest": "scripts/integrations/devin/manage_knowledge.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Manage Devin knowledge notes (breadcrumbs) via the Devin API.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\nclass DevinKnowledgeManager:\n    \"\"\"Client for managing Devin knowledge notes.\"\"\"\n\n    def __init__(self):\n        self.api_token = os.environ.get(\"DEVIN_API\")\n        if not self.api_token:\n            print(\n                '{\"error\": \"DEVIN_API environment variable not set\"}', file=sys.stderr\n            )\n            sys.exit(1)\n\n        self.base_url = \"https://api.devin.ai/v1\"\n        self.headers = {\n            \"Authorization\": f\"Bearer {self.api_token}\",\n            \"Content-Type\": \"application/json\",\n        }\n\n    def get_knowledge(self, knowledge_id):\n        \"\"\"Retrieve a knowledge note by ID.\n\n        Args:\n            knowledge_id: The ID of the knowledge note.\n\n        Returns:\n            dict with the knowledge note content or error.\n        \"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/knowledge/{knowledge_id}\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def update_knowledge(self, knowledge_id, content):\n        \"\"\"Update a knowledge note by ID.\n\n        Args:\n            knowledge_id: The ID of the knowledge note.\n            content: New content for the note.\n\n        Returns:\n            dict with success status or error.\n        \"\"\"\n        payload = {\"content\": content}\n\n        try:\n            response = requests.patch(\n                f\"{self.base_url}/knowledge/{knowledge_id}\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return {\"success\": True, \"knowledge_id\": knowledge_id}\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def create_knowledge(self, title, content, trigger_type=\"keyword\", trigger=None):\n        \"\"\"Create a new knowledge note.\n\n        Args:\n            title: Title of the knowledge note.\n            content: Content of the note.\n            trigger_type: How the note is triggered (\"keyword\", \"always\", etc.).\n            trigger: Trigger value (e.g., keyword string).\n\n        Returns:\n            dict with the created note or error.\n        \"\"\"\n        payload = {\n            \"title\": title,\n            \"content\": content,\n            \"trigger_type\": trigger_type,\n        }\n        if trigger:\n            payload[\"trigger\"] = trigger\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/knowledge\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def list_knowledge(self):\n        \"\"\"List all knowledge notes.\n\n        Returns:\n            dict with the list of notes or error.\n        \"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/knowledge\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def update_breadcrumbs(self, target_ids, content):\n        \"\"\"Update multiple knowledge notes (breadcrumbs) with the same content.\n\n        Args:\n            target_ids: List of knowledge note IDs to update.\n            content: Content to set on each note.\n\n        Returns:\n            dict with results for each target.\n        \"\"\"\n        results = {}\n        for kid in target_ids:\n            results[kid] = self.update_knowledge(kid, content)\n        return {\n            \"breadcrumb_results\": results,\n            \"total\": len(target_ids),\n            \"success_count\": sum(\n                1 for r in results.values() if r.get(\"success\")\n            ),\n        }\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Devin Knowledge Management CLI\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    # list command\n    subparsers.add_parser(\"list\", help=\"List all knowledge notes\")\n\n    # get command\n    get_parser = subparsers.add_parser(\"get\", help=\"Get a knowledge note by ID\")\n    get_parser.add_argument(\"--id\", required=True, help=\"Knowledge note ID\")\n\n    # create command\n    create_parser = subparsers.add_parser(\"create\", help=\"Create a knowledge note\")\n    create_parser.add_argument(\"--title\", required=True, help=\"Note title\")\n    create_parser.add_argument(\"--content\", required=True, help=\"Note content\")\n    create_parser.add_argument(\n        \"--trigger-type\",\n        default=\"keyword\",\n        help=\"Trigger type (default: keyword)\",\n    )\n    create_parser.add_argument(\"--trigger\", default=None, help=\"Trigger value\")\n\n    # update command\n    update_parser = subparsers.add_parser(\"update\", help=\"Update a knowledge note\")\n    update_parser.add_argument(\"--id\", required=True, help=\"Knowledge note ID\")\n    update_parser.add_argument(\"--content\", required=True, help=\"New content\")\n\n    # breadcrumbs command\n    bc_parser = subparsers.add_parser(\n        \"breadcrumbs\", help=\"Update multiple knowledge notes with the same content\"\n    )\n    bc_parser.add_argument(\n        \"--targets\",\n        required=True,\n        help=\"Comma-separated list of knowledge note IDs\",\n    )\n    bc_parser.add_argument(\n        \"--content\", required=True, help=\"Content to set on each note\"\n    )\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    manager = DevinKnowledgeManager()\n\n    if args.command == \"list\":\n        result = manager.list_knowledge()\n    elif args.command == \"get\":\n        result = manager.get_knowledge(args.id)\n    elif args.command == \"create\":\n        result = manager.create_knowledge(\n            args.title, args.content, args.trigger_type, args.trigger\n        )\n    elif args.command == \"update\":\n        result = manager.update_knowledge(args.id, args.content)\n    elif args.command == \"breadcrumbs\":\n        target_ids = [t.strip() for t in args.targets.split(\",\")]\n        result = manager.update_breadcrumbs(target_ids, args.content)\n\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n    sys.exit(0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/devin/AGENTS.md",
+          "content": "# Devin API Integration\n\nSpawn and monitor Devin sessions and manage knowledge notes (breadcrumbs) via the Devin API.\n\n## Scripts\n\n### devin_api_client.py\n\nShared HTTP client library for the Devin API. Provides `DevinAPIClient` with methods:\n\n- `spawn_session(repo, task, context=None)` - Start a new Devin coding session.\n- `get_session_status(session_id)` - Check the status of a running session.\n\nThis module is intended to be imported by other scripts:\n\n```python\nfrom devin_api_client import DevinAPIClient\n\nclient = DevinAPIClient()\nresult = client.spawn_session(\"org/repo\", \"Fix the login bug\")\nstatus = client.get_session_status(result[\"session_id\"])\n```\n\n### manage_knowledge.py\n\nCLI for managing Devin knowledge notes (breadcrumbs).\n\n```bash\n# List all knowledge notes\npython scripts/integrations/devin/manage_knowledge.py list\n\n# Get a specific knowledge note\npython scripts/integrations/devin/manage_knowledge.py get --id NOTE_ID\n\n# Create a new knowledge note\npython scripts/integrations/devin/manage_knowledge.py create \\\n  --title \"Coding Standards\" \\\n  --content \"Always use type hints in Python.\" \\\n  --trigger-type keyword \\\n  --trigger \"python\"\n\n# Update an existing knowledge note\npython scripts/integrations/devin/manage_knowledge.py update \\\n  --id NOTE_ID \\\n  --content \"Updated content here.\"\n\n# Update multiple breadcrumb notes at once\npython scripts/integrations/devin/manage_knowledge.py breadcrumbs \\\n  --targets \"ID_1,ID_2,ID_3\" \\\n  --content \"Shared breadcrumb content.\"\n```\n\n## Environment Variables\n\n- `DEVIN_API` (required): Bearer token for the Devin API.\n\n## Output\n\nAll commands output JSON to stdout. Errors output JSON to stderr with exit code 1.\n"
+        }
+      ],
+      "python_dependencies": [
+        "requests>=2.31.0"
+      ],
+      "env_vars": [
+        {
+          "name": "DEVIN_API",
+          "description": "Bearer token for Devin API",
+          "required": true
+        }
+      ],
+      "tags": [
+        "devin",
+        "api",
+        "sessions",
+        "knowledge"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "devin"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "jira-integration",
+      "name": "Jira Integration",
+      "description": "CLI tool for creating, updating, commenting on, and searching Jira tickets. Gives agents direct access to your Jira project via the REST API.\n",
+      "category": "integrations",
+      "subcategory": "project-management",
+      "files": [
+        {
+          "src": "jira_cli.py",
+          "dest": "scripts/integrations/jira/jira_cli.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Jira CLI for creating, updating, commenting, and searching tickets.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\nclass JiraClient:\n    \"\"\"Client for Jira API interactions.\"\"\"\n\n    def __init__(self):\n        self.base_url = os.environ.get(\"JIRA_BASE_URL\", \"\").rstrip(\"/\")\n        if not self.base_url:\n            print(\n                '{\"error\": \"JIRA_BASE_URL environment variable required\"}',\n                file=sys.stderr,\n            )\n            sys.exit(1)\n        self.base_url = f\"{self.base_url}/rest/api/3\"\n\n        jira_auth = os.environ.get(\"JIRA_AUTH\")\n        if jira_auth:\n            self.headers = {\n                \"Authorization\": f\"Basic {jira_auth}\",\n                \"Accept\": \"application/json\",\n                \"Content-Type\": \"application/json\",\n            }\n        else:\n            jira_email = os.environ.get(\"JIRA_EMAIL\")\n            jira_token = os.environ.get(\"JIRA_API_TOKEN\")\n            if not jira_email or not jira_token:\n                print(\n                    '{\"error\": \"JIRA_AUTH or (JIRA_EMAIL and JIRA_API_TOKEN) required\"}',\n                    file=sys.stderr,\n                )\n                sys.exit(1)\n\n            import base64\n\n            auth_str = f\"{jira_email}:{jira_token}\"\n            auth_bytes = base64.b64encode(auth_str.encode()).decode()\n            self.headers = {\n                \"Authorization\": f\"Basic {auth_bytes}\",\n                \"Accept\": \"application/json\",\n                \"Content-Type\": \"application/json\",\n            }\n\n    def create_issue(self, project, summary, description, issue_type=\"Task\"):\n        \"\"\"Create a new Jira issue.\"\"\"\n        payload = {\n            \"fields\": {\n                \"project\": {\"key\": project},\n                \"summary\": summary,\n                \"description\": {\n                    \"type\": \"doc\",\n                    \"version\": 1,\n                    \"content\": [\n                        {\n                            \"type\": \"paragraph\",\n                            \"content\": [{\"type\": \"text\", \"text\": description}],\n                        }\n                    ],\n                },\n                \"issuetype\": {\"name\": issue_type},\n            }\n        }\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/issue\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def get_issue(self, issue_key):\n        \"\"\"Get details of a Jira issue.\"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/issue/{issue_key}\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def update_issue(self, issue_key, fields):\n        \"\"\"Update a Jira issue.\"\"\"\n        payload = {\"fields\": fields}\n\n        try:\n            response = requests.put(\n                f\"{self.base_url}/issue/{issue_key}\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return {\"success\": True, \"issue_key\": issue_key}\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def add_comment(self, issue_key, comment):\n        \"\"\"Add a comment to a Jira issue.\"\"\"\n        payload = {\n            \"body\": {\n                \"type\": \"doc\",\n                \"version\": 1,\n                \"content\": [\n                    {\n                        \"type\": \"paragraph\",\n                        \"content\": [{\"type\": \"text\", \"text\": comment}],\n                    }\n                ],\n            }\n        }\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/issue/{issue_key}/comment\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def search_issues(self, jql, max_results=50):\n        \"\"\"Search for Jira issues using JQL.\"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/search\",\n                headers=self.headers,\n                params={\"jql\": jql, \"maxResults\": max_results},\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Jira CLI\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    create_parser = subparsers.add_parser(\"create\", help=\"Create a new issue\")\n    create_parser.add_argument(\n        \"--project\", required=True, help=\"Project key (e.g., PROJ)\"\n    )\n    create_parser.add_argument(\"--summary\", required=True, help=\"Issue summary\")\n    create_parser.add_argument(\n        \"--description\", required=True, help=\"Issue description\"\n    )\n    create_parser.add_argument(\n        \"--type\", default=\"Task\", help=\"Issue type (default: Task)\"\n    )\n\n    get_parser = subparsers.add_parser(\"get\", help=\"Get issue details\")\n    get_parser.add_argument(\n        \"--issue-key\", required=True, help=\"Issue key (e.g., PROJ-123)\"\n    )\n\n    update_parser = subparsers.add_parser(\"update\", help=\"Update an issue\")\n    update_parser.add_argument(\"--issue-key\", required=True, help=\"Issue key\")\n    update_parser.add_argument(\"--summary\", help=\"New summary\")\n    update_parser.add_argument(\"--description\", help=\"New description\")\n\n    comment_parser = subparsers.add_parser(\"comment\", help=\"Add a comment\")\n    comment_parser.add_argument(\"--issue-key\", required=True, help=\"Issue key\")\n    comment_parser.add_argument(\"--comment\", required=True, help=\"Comment text\")\n\n    search_parser = subparsers.add_parser(\"search\", help=\"Search issues\")\n    search_parser.add_argument(\"--jql\", required=True, help=\"JQL query\")\n    search_parser.add_argument(\n        \"--max-results\", type=int, default=50, help=\"Max results\"\n    )\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    client = JiraClient()\n\n    if args.command == \"create\":\n        result = client.create_issue(\n            args.project, args.summary, args.description, args.type\n        )\n    elif args.command == \"get\":\n        result = client.get_issue(args.issue_key)\n    elif args.command == \"update\":\n        fields = {}\n        if args.summary:\n            fields[\"summary\"] = args.summary\n        if args.description:\n            fields[\"description\"] = {\n                \"type\": \"doc\",\n                \"version\": 1,\n                \"content\": [\n                    {\n                        \"type\": \"paragraph\",\n                        \"content\": [{\"type\": \"text\", \"text\": args.description}],\n                    }\n                ],\n            }\n        result = client.update_issue(args.issue_key, fields)\n    elif args.command == \"comment\":\n        result = client.add_comment(args.issue_key, args.comment)\n    elif args.command == \"search\":\n        result = client.search_issues(args.jql, args.max_results)\n\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n    sys.exit(0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/jira/AGENTS.md",
+          "content": "# Jira Integration\n\nCLI tool for interacting with Jira tickets.\n\n## Usage\n\n```bash\n# Create a ticket\npython scripts/integrations/jira/jira_cli.py create --project PROJ --summary \"Title\" --description \"Details\"\n\n# Get ticket details\npython scripts/integrations/jira/jira_cli.py get --issue-key PROJ-123\n\n# Update a ticket\npython scripts/integrations/jira/jira_cli.py update --issue-key PROJ-123 --summary \"New title\"\n\n# Add a comment\npython scripts/integrations/jira/jira_cli.py comment --issue-key PROJ-123 --comment \"Comment text\"\n\n# Search with JQL\npython scripts/integrations/jira/jira_cli.py search --jql \"project = PROJ AND status = 'In Progress'\"\n```\n\n## Environment Variables\n\n- `JIRA_BASE_URL` (required): Your Jira instance URL (e.g., `https://your-org.atlassian.net`)\n- `JIRA_AUTH`: Pre-computed Base64(email:token), OR use:\n  - `JIRA_EMAIL` + `JIRA_API_TOKEN`\n\n## Output\n\nAll commands output JSON to stdout. Errors output JSON to stderr with exit code 1.\n"
+        }
+      ],
+      "python_dependencies": [
+        "requests>=2.31.0"
+      ],
+      "env_vars": [
+        {
+          "name": "JIRA_BASE_URL",
+          "description": "Your Jira instance URL (e.g., https://your-org.atlassian.net)",
+          "required": true
+        },
+        {
+          "name": "JIRA_AUTH",
+          "description": "Pre-computed Base64(email:token) for Jira API authentication",
+          "required": false,
+          "alternative": "Use JIRA_EMAIL + JIRA_API_TOKEN instead"
+        },
+        {
+          "name": "JIRA_EMAIL",
+          "description": "Email address for Jira authentication",
+          "required": false
+        },
+        {
+          "name": "JIRA_API_TOKEN",
+          "description": "API token for Jira authentication",
+          "required": false
+        }
+      ],
+      "tags": [
+        "jira",
+        "project-management",
+        "ticketing",
+        "atlassian"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "notion-integration",
+      "name": "Notion Integration",
+      "description": "Query and manage Notion pages and databases via the Notion API. Supports searching, retrieving pages, and querying databases with filters.\n",
+      "category": "integrations",
+      "subcategory": "documentation",
+      "files": [
+        {
+          "src": "notion_cli.py",
+          "dest": "scripts/integrations/notion/notion_cli.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Notion CLI for querying and managing pages and databases.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\nclass NotionClient:\n    \"\"\"Client for Notion API interactions.\"\"\"\n\n    def __init__(self):\n        self.api_key = os.environ.get(\"NOTION_KEY\")\n        if not self.api_key:\n            print(\n                '{\"error\": \"NOTION_KEY environment variable not set\"}',\n                file=sys.stderr,\n            )\n            sys.exit(1)\n\n        self.base_url = \"https://api.notion.com/v1\"\n        self.headers = {\n            \"Authorization\": f\"Bearer {self.api_key}\",\n            \"Content-Type\": \"application/json\",\n            \"Notion-Version\": \"2022-06-28\",\n        }\n\n    def search(self, query, filter_type=None, page_size=20):\n        \"\"\"Search across all pages and databases the integration has access to.\n\n        Args:\n            query: Search query string.\n            filter_type: Optional filter - \"page\" or \"database\".\n            page_size: Number of results to return (default: 20, max: 100).\n\n        Returns:\n            dict with search results or error.\n        \"\"\"\n        payload = {\n            \"query\": query,\n            \"page_size\": page_size,\n        }\n        if filter_type:\n            payload[\"filter\"] = {\"value\": filter_type, \"property\": \"object\"}\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/search\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def get_page(self, page_id):\n        \"\"\"Retrieve a Notion page by ID.\n\n        Args:\n            page_id: The Notion page ID (UUID, with or without dashes).\n\n        Returns:\n            dict with page properties or error.\n        \"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/pages/{page_id}\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def get_database(self, database_id):\n        \"\"\"Retrieve a Notion database schema by ID.\n\n        Args:\n            database_id: The Notion database ID (UUID, with or without dashes).\n\n        Returns:\n            dict with database schema/properties or error.\n        \"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/databases/{database_id}\",\n                headers=self.headers,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def query_database(self, database_id, filter_dict=None, page_size=100):\n        \"\"\"Query a Notion database with optional filters.\n\n        Args:\n            database_id: The Notion database ID.\n            filter_dict: Optional Notion filter object (see Notion API docs).\n            page_size: Number of results to return (default: 100, max: 100).\n\n        Returns:\n            dict with query results or error.\n        \"\"\"\n        payload = {\"page_size\": page_size}\n        if filter_dict:\n            payload[\"filter\"] = filter_dict\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/databases/{database_id}/query\",\n                headers=self.headers,\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            return response.json()\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Notion CLI\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    # search command\n    search_parser = subparsers.add_parser(\n        \"search\", help=\"Search pages and databases\"\n    )\n    search_parser.add_argument(\"--query\", required=True, help=\"Search query\")\n    search_parser.add_argument(\n        \"--filter-type\",\n        choices=[\"page\", \"database\"],\n        default=None,\n        help=\"Filter results by type\",\n    )\n    search_parser.add_argument(\n        \"--page-size\",\n        type=int,\n        default=20,\n        help=\"Number of results (default: 20, max: 100)\",\n    )\n\n    # get-page command\n    page_parser = subparsers.add_parser(\"get-page\", help=\"Get a page by ID\")\n    page_parser.add_argument(\"--page-id\", required=True, help=\"Notion page ID\")\n\n    # get-database command\n    db_parser = subparsers.add_parser(\n        \"get-database\", help=\"Get a database schema by ID\"\n    )\n    db_parser.add_argument(\n        \"--database-id\", required=True, help=\"Notion database ID\"\n    )\n\n    # query-database command\n    query_parser = subparsers.add_parser(\n        \"query-database\", help=\"Query a database with optional filters\"\n    )\n    query_parser.add_argument(\n        \"--database-id\", required=True, help=\"Notion database ID\"\n    )\n    query_parser.add_argument(\n        \"--filter\",\n        default=None,\n        help=\"Notion filter as JSON string (see Notion API docs for filter format)\",\n    )\n    query_parser.add_argument(\n        \"--page-size\",\n        type=int,\n        default=100,\n        help=\"Number of results (default: 100, max: 100)\",\n    )\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    client = NotionClient()\n\n    if args.command == \"search\":\n        result = client.search(\n            args.query, filter_type=args.filter_type, page_size=args.page_size\n        )\n    elif args.command == \"get-page\":\n        result = client.get_page(args.page_id)\n    elif args.command == \"get-database\":\n        result = client.get_database(args.database_id)\n    elif args.command == \"query-database\":\n        filter_dict = None\n        if args.filter:\n            try:\n                filter_dict = json.loads(args.filter)\n            except json.JSONDecodeError as e:\n                print(\n                    json.dumps({\"error\": f\"Invalid JSON for --filter: {e}\"}),\n                    file=sys.stderr,\n                )\n                sys.exit(1)\n        result = client.query_database(\n            args.database_id, filter_dict=filter_dict, page_size=args.page_size\n        )\n\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n    sys.exit(0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/notion/AGENTS.md",
+          "content": "# Notion Integration\n\nQuery and manage Notion pages and databases via the Notion API.\n\n## Usage\n\n```bash\n# Search across all accessible pages and databases\npython scripts/integrations/notion/notion_cli.py search --query \"Project roadmap\"\n\n# Search for databases only\npython scripts/integrations/notion/notion_cli.py search --query \"Tasks\" --filter-type database\n\n# Get a specific page by ID\npython scripts/integrations/notion/notion_cli.py get-page --page-id \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\"\n\n# Get a database schema\npython scripts/integrations/notion/notion_cli.py get-database --database-id \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\"\n\n# Query a database (all rows)\npython scripts/integrations/notion/notion_cli.py query-database --database-id \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\"\n\n# Query a database with a filter\npython scripts/integrations/notion/notion_cli.py query-database \\\n  --database-id \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\" \\\n  --filter '{\"property\": \"Status\", \"select\": {\"equals\": \"In Progress\"}}'\n```\n\n## Environment Variables\n\n- `NOTION_KEY` (required): Notion integration token (starts with `ntn_` or `secret_`).\n\n## Commands\n\n| Command          | Description |\n|------------------|-------------|\n| `search`         | Search pages and databases. Supports `--filter-type` (page/database) and `--page-size`. |\n| `get-page`       | Retrieve a single page by its ID. |\n| `get-database`   | Retrieve a database schema (properties, title) by its ID. |\n| `query-database` | Query rows from a database. Supports `--filter` (Notion filter JSON) and `--page-size`. |\n\n## Output\n\nAll commands output JSON to stdout. Errors output JSON to stderr with exit code 1.\n"
+        }
+      ],
+      "python_dependencies": [
+        "requests>=2.31.0"
+      ],
+      "env_vars": [
+        {
+          "name": "NOTION_KEY",
+          "description": "Notion integration token",
+          "required": true
+        }
+      ],
+      "tags": [
+        "notion",
+        "documentation",
+        "wiki",
+        "knowledge-base"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "telegram-notifications",
+      "name": "Telegram Notifications",
+      "description": "Send notifications and formatted alerts via Telegram Bot API. Supports plain messages, structured alerts with severity levels, and bot connectivity checks.\n",
+      "category": "integrations",
+      "subcategory": "notifications",
+      "files": [
+        {
+          "src": "telegram_notify.py",
+          "dest": "scripts/integrations/telegram/telegram_notify.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Generic Telegram notification tool via Bot API.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\nSEVERITY_EMOJI = {\n    \"INFO\": \"\\u2139\\ufe0f\",\n    \"WARNING\": \"\\u26a0\\ufe0f\",\n    \"CRITICAL\": \"\\ud83d\\udea8\",\n}\n\n\nclass TelegramNotifier:\n    \"\"\"Client for sending notifications via Telegram Bot API.\"\"\"\n\n    def __init__(self):\n        self.bot_token = os.environ.get(\"TELEGRAM_BOT_TOKEN\")\n        if not self.bot_token:\n            print(\n                '{\"error\": \"TELEGRAM_BOT_TOKEN environment variable not set\"}',\n                file=sys.stderr,\n            )\n            sys.exit(1)\n\n        self.chat_id = os.environ.get(\"TELEGRAM_CHAT_ID\")\n        if not self.chat_id:\n            print(\n                '{\"error\": \"TELEGRAM_CHAT_ID environment variable not set\"}',\n                file=sys.stderr,\n            )\n            sys.exit(1)\n\n        self.base_url = f\"https://api.telegram.org/bot{self.bot_token}\"\n\n    def send_message(self, text, parse_mode=None):\n        \"\"\"Send a plain text message to the configured chat.\n\n        Args:\n            text: Message text (up to 4096 characters).\n            parse_mode: Optional parse mode - \"HTML\", \"Markdown\", or \"MarkdownV2\".\n\n        Returns:\n            dict with the API response or error.\n        \"\"\"\n        payload = {\n            \"chat_id\": self.chat_id,\n            \"text\": text,\n        }\n        if parse_mode:\n            payload[\"parse_mode\"] = parse_mode\n\n        try:\n            response = requests.post(\n                f\"{self.base_url}/sendMessage\",\n                json=payload,\n                timeout=30,\n            )\n            response.raise_for_status()\n            data = response.json()\n            if data.get(\"ok\"):\n                return {\n                    \"success\": True,\n                    \"message_id\": data[\"result\"][\"message_id\"],\n                    \"chat_id\": self.chat_id,\n                }\n            return {\"error\": data.get(\"description\", \"Unknown Telegram API error\")}\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n    def send_alert(self, title, fields_dict, severity=\"INFO\", extra_context=None):\n        \"\"\"Send a formatted alert message with structured fields.\n\n        Args:\n            title: Alert title.\n            fields_dict: Dictionary of field_name -> field_value pairs.\n            severity: One of \"INFO\", \"WARNING\", \"CRITICAL\".\n            extra_context: Optional additional text appended at the end.\n\n        Returns:\n            dict with the API response or error.\n        \"\"\"\n        severity = severity.upper()\n        emoji = SEVERITY_EMOJI.get(severity, SEVERITY_EMOJI[\"INFO\"])\n\n        lines = [f\"{emoji} <b>{severity}: {title}</b>\", \"\"]\n\n        for key, value in fields_dict.items():\n            lines.append(f\"<b>{key}:</b> {value}\")\n\n        if extra_context:\n            lines.append(\"\")\n            lines.append(extra_context)\n\n        message = \"\\n\".join(lines)\n        return self.send_message(message, parse_mode=\"HTML\")\n\n    def get_bot_info(self):\n        \"\"\"Verify bot connectivity by calling getMe.\n\n        Returns:\n            dict with bot information or error.\n        \"\"\"\n        try:\n            response = requests.get(\n                f\"{self.base_url}/getMe\",\n                timeout=30,\n            )\n            response.raise_for_status()\n            data = response.json()\n            if data.get(\"ok\"):\n                bot = data[\"result\"]\n                return {\n                    \"success\": True,\n                    \"bot_id\": bot[\"id\"],\n                    \"bot_name\": bot.get(\"first_name\", \"\"),\n                    \"bot_username\": bot.get(\"username\", \"\"),\n                }\n            return {\"error\": data.get(\"description\", \"Unknown Telegram API error\")}\n        except requests.exceptions.RequestException as e:\n            return {\n                \"error\": str(e),\n                \"status_code\": getattr(e.response, \"status_code\", None),\n            }\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Telegram Notification CLI\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    # send command\n    send_parser = subparsers.add_parser(\"send\", help=\"Send a plain text message\")\n    send_parser.add_argument(\"--text\", required=True, help=\"Message text\")\n    send_parser.add_argument(\n        \"--parse-mode\",\n        choices=[\"HTML\", \"Markdown\", \"MarkdownV2\"],\n        default=None,\n        help=\"Parse mode for formatting\",\n    )\n\n    # alert command\n    alert_parser = subparsers.add_parser(\"alert\", help=\"Send a formatted alert\")\n    alert_parser.add_argument(\"--title\", required=True, help=\"Alert title\")\n    alert_parser.add_argument(\n        \"--fields\",\n        required=True,\n        help='JSON object of field_name:value pairs (e.g., \\'{\"CPU\": \"95%%\", \"Host\": \"prod-1\"}\\')',\n    )\n    alert_parser.add_argument(\n        \"--severity\",\n        choices=[\"INFO\", \"WARNING\", \"CRITICAL\"],\n        default=\"INFO\",\n        help=\"Alert severity level (default: INFO)\",\n    )\n    alert_parser.add_argument(\n        \"--context\", default=None, help=\"Additional context text\"\n    )\n\n    # info command\n    subparsers.add_parser(\"info\", help=\"Get bot info to verify connectivity\")\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    notifier = TelegramNotifier()\n\n    if args.command == \"send\":\n        result = notifier.send_message(args.text, parse_mode=args.parse_mode)\n    elif args.command == \"alert\":\n        try:\n            fields = json.loads(args.fields)\n        except json.JSONDecodeError as e:\n            print(\n                json.dumps({\"error\": f\"Invalid JSON for --fields: {e}\"}), file=sys.stderr\n            )\n            sys.exit(1)\n        result = notifier.send_alert(\n            args.title, fields, severity=args.severity, extra_context=args.context\n        )\n    elif args.command == \"info\":\n        result = notifier.get_bot_info()\n\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n    sys.exit(0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/telegram/AGENTS.md",
+          "content": "# Telegram Notifications\n\nSend notifications and formatted alerts via Telegram Bot API.\n\n## Usage\n\n```bash\n# Send a plain text message\npython scripts/integrations/telegram/telegram_notify.py send --text \"Deployment complete\"\n\n# Send with HTML formatting\npython scripts/integrations/telegram/telegram_notify.py send --text \"<b>Done</b>\" --parse-mode HTML\n\n# Send a formatted alert with severity\npython scripts/integrations/telegram/telegram_notify.py alert \\\n  --title \"High CPU Usage\" \\\n  --fields '{\"Host\": \"prod-1\", \"CPU\": \"95%\", \"Duration\": \"10m\"}' \\\n  --severity WARNING\n\n# Send a critical alert with extra context\npython scripts/integrations/telegram/telegram_notify.py alert \\\n  --title \"Service Down\" \\\n  --fields '{\"Service\": \"api-gateway\", \"Region\": \"us-east-1\"}' \\\n  --severity CRITICAL \\\n  --context \"On-call engineer has been paged.\"\n\n# Verify bot connectivity\npython scripts/integrations/telegram/telegram_notify.py info\n```\n\n## Environment Variables\n\n- `TELEGRAM_BOT_TOKEN` (required): Bot token obtained from @BotFather.\n- `TELEGRAM_CHAT_ID` (required): Target chat, group, or channel ID for notifications.\n\n## Commands\n\n| Command | Description |\n|---------|-------------|\n| `send`  | Send a plain text message. Supports optional `--parse-mode` (HTML, Markdown, MarkdownV2). |\n| `alert` | Send a structured alert with `--title`, `--fields` (JSON), `--severity` (INFO/WARNING/CRITICAL), and optional `--context`. |\n| `info`  | Call `getMe` to verify the bot token is valid and the bot is reachable. |\n\n## Output\n\nAll commands output JSON to stdout. Errors output JSON to stderr with exit code 1.\n"
+        }
+      ],
+      "python_dependencies": [
+        "requests>=2.31.0"
+      ],
+      "env_vars": [
+        {
+          "name": "TELEGRAM_BOT_TOKEN",
+          "description": "Bot token from @BotFather",
+          "required": true
+        },
+        {
+          "name": "TELEGRAM_CHAT_ID",
+          "description": "Target chat/group/channel ID for notifications",
+          "required": true
+        }
+      ],
+      "tags": [
+        "telegram",
+        "notifications",
+        "alerts",
+        "messaging"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "agent-rules",
+      "name": "Agent Rules",
+      "description": "21 core principles for AI agents: think first, search before creating, follow existing patterns, verify everything, prefer boring solutions.\n",
+      "category": "knowledge",
+      "subcategory": "principles",
+      "files": [
+        {
+          "src": "agent_rules.json",
+          "dest": "knowledge/agent_rules.json",
+          "content": "{\n  \"agent_rules\": {\n    \"description\": \"Core principles and rules for AI agents working on repositories\",\n    \"version\": \"1.0.0\",\n    \"principles\": {\n      \"think_first\": {\n        \"rule\": \"Think first. Code later.\",\n        \"priority\": 1,\n        \"description\": \"Always plan and understand before implementing\"\n      },\n      \"search_before_creating\": {\n        \"rule\": \"Search before creating anything.\",\n        \"priority\": 2,\n        \"description\": \"Check if similar code, patterns, or solutions already exist\"\n      },\n      \"use_real_references\": {\n        \"rule\": \"Use real reference tools (Find References, Find Usages), not plain text search.\",\n        \"priority\": 3,\n        \"description\": \"Use LSP tools (goto_references, goto_definition) for code analysis\"\n      },\n      \"follow_existing_patterns\": {\n        \"rule\": \"Follow the closest existing pattern.\",\n        \"priority\": 4,\n        \"description\": \"Consistency with existing codebase is more important than personal preferences\"\n      },\n      \"small_steps\": {\n        \"rule\": \"Small steps; each one must run.\",\n        \"priority\": 5,\n        \"description\": \"Make incremental changes that can be tested independently\"\n      },\n      \"verify_everything\": {\n        \"rule\": \"Verify everything; never assume.\",\n        \"priority\": 6,\n        \"description\": \"Test and validate all changes\"\n      },\n      \"maintenance_cost\": {\n        \"rule\": \"Maintenance is the real cost.\",\n        \"priority\": 7,\n        \"description\": \"Write code that is easy to maintain, not just easy to write\"\n      },\n      \"big_picture_first\": {\n        \"rule\": \"Look at the big picture before touching details.\",\n        \"priority\": 8,\n        \"description\": \"Understand the overall architecture before making changes\"\n      },\n      \"boring_solutions\": {\n        \"rule\": \"Prefer boring, predictable solutions.\",\n        \"priority\": 9,\n        \"description\": \"Simple, well-understood approaches over clever or novel ones\"\n      },\n      \"one_change_at_time\": {\n        \"rule\": \"One change at a time.\",\n        \"priority\": 10,\n        \"description\": \"Make atomic changes that can be reviewed and tested independently\"\n      },\n      \"data_over_intuition\": {\n        \"rule\": \"Logs and data beat intuition.\",\n        \"priority\": 11,\n        \"description\": \"Base decisions on evidence, not assumptions\"\n      },\n      \"reduce_scope_when_stuck\": {\n        \"rule\": \"If stuck, reduce the scope.\",\n        \"priority\": 12,\n        \"description\": \"Simplify the problem rather than adding complexity\"\n      },\n      \"clear_communication\": {\n        \"rule\": \"Keep communication short, clear, and early.\",\n        \"priority\": 13,\n        \"description\": \"Communicate proactively and concisely\"\n      },\n      \"ask_questions\": {\n        \"rule\": \"Ask questions when context is missing.\",\n        \"priority\": 14,\n        \"description\": \"Don't proceed with incomplete information\"\n      },\n      \"no_assumptions\": {\n        \"rule\": \"Don't make assumptions about user intent.\",\n        \"priority\": 15,\n        \"description\": \"Clarify requirements rather than guessing\"\n      },\n      \"document_reasoning\": {\n        \"rule\": \"Document reasoning when it matters.\",\n        \"priority\": 16,\n        \"description\": \"Explain non-obvious decisions for future reference\"\n      },\n      \"no_multitasking\": {\n        \"rule\": \"Don't multitask; finish the current thread.\",\n        \"priority\": 17,\n        \"description\": \"Complete one task before starting another\"\n      },\n      \"slow_down_when_uncertain\": {\n        \"rule\": \"If tired, confused, or uncertain, slow down.\",\n        \"priority\": 18,\n        \"description\": \"Take time to understand rather than rushing\"\n      },\n      \"consistency_over_cleverness\": {\n        \"rule\": \"Consistency beats cleverness.\",\n        \"priority\": 19,\n        \"description\": \"Predictable code is better than clever code\"\n      },\n      \"verify_target\": {\n        \"rule\": \"Always confirm you're modifying the correct repo, branch, and file.\",\n        \"priority\": 20,\n        \"description\": \"Double-check context before making changes\"\n      },\n      \"do_only_what_asked\": {\n        \"rule\": \"Do only what was asked - nothing extra.\",\n        \"priority\": 21,\n        \"description\": \"Avoid scope creep and unnecessary changes\"\n      }\n    },\n    \"categories\": {\n      \"planning\": [\"think_first\", \"search_before_creating\", \"big_picture_first\", \"reduce_scope_when_stuck\"],\n      \"code_quality\": [\"use_real_references\", \"follow_existing_patterns\", \"small_steps\", \"boring_solutions\", \"one_change_at_time\", \"consistency_over_cleverness\", \"maintenance_cost\"],\n      \"verification\": [\"verify_everything\", \"data_over_intuition\", \"verify_target\"],\n      \"communication\": [\"clear_communication\", \"ask_questions\", \"no_assumptions\", \"document_reasoning\"],\n      \"focus\": [\"no_multitasking\", \"slow_down_when_uncertain\", \"do_only_what_asked\"]\n    },\n    \"quick_reference\": [\n      \"Think first. Code later.\",\n      \"Search before creating anything.\",\n      \"Use real reference tools, not plain text search.\",\n      \"Follow the closest existing pattern.\",\n      \"Small steps; each one must run.\",\n      \"Verify everything; never assume.\",\n      \"Maintenance is the real cost.\",\n      \"Look at the big picture before touching details.\",\n      \"Prefer boring, predictable solutions.\",\n      \"One change at a time.\",\n      \"Logs and data beat intuition.\",\n      \"If stuck, reduce the scope.\",\n      \"Keep communication short, clear, and early.\",\n      \"Ask questions when context is missing.\",\n      \"Don't make assumptions about user intent.\",\n      \"Document reasoning when it matters.\",\n      \"Don't multitask; finish the current thread.\",\n      \"If tired, confused, or uncertain, slow down.\",\n      \"Consistency beats cleverness.\",\n      \"Always confirm you're modifying the correct repo, branch, and file.\",\n      \"Do only what was asked - nothing extra.\"\n    ]\n  }\n}\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "rules",
+        "principles",
+        "best-practices",
+        "guidelines"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "developer-profiles",
+      "name": "Developer & Team Profiles",
+      "description": "Template JSON structures for storing developer profiles, PM context, and system ownership information that agents can reference.\n",
+      "category": "knowledge",
+      "subcategory": "templates",
+      "files": [
+        {
+          "src": "developers.json",
+          "dest": "memory/developers.json",
+          "content": "{\n  \"example_developer\": {\n    \"github_username\": \"example-user\",\n    \"name\": \"Example Developer\",\n    \"systems\": [\"system-a\", \"system-b\"],\n    \"expertise\": [\"python\", \"kubernetes\"],\n    \"notes\": \"Lead developer for the payments team\"\n  }\n}\n"
+        },
+        {
+          "src": "pms.json",
+          "dest": "memory/pms.json",
+          "content": "{\n  \"example_pm\": {\n    \"name\": \"Example PM\",\n    \"projects\": [\"project-alpha\", \"project-beta\"],\n    \"context\": \"Manages the customer-facing product roadmap\"\n  }\n}\n"
+        },
+        {
+          "src": "systems.json",
+          "dest": "memory/systems.json",
+          "content": "{\n  \"example-system\": {\n    \"owner\": \"example_developer\",\n    \"description\": \"Core API service handling user requests\",\n    \"tech_stack\": [\"python\", \"fastapi\", \"postgresql\"],\n    \"repository\": \"org/example-system\"\n  }\n}\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "developers",
+        "teams",
+        "profiles",
+        "memory"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "glossary-template",
+      "name": "Glossary Template",
+      "description": "Template for organizational glossary with terms, tools, environments, and workflows that agents should understand.\n",
+      "category": "knowledge",
+      "subcategory": "templates",
+      "files": [
+        {
+          "src": "glossary.json",
+          "dest": "knowledge/glossary.json",
+          "content": "{\n  \"terms\": {\n    \"example_term\": {\n      \"definition\": \"Description of what this term means in your organization\",\n      \"aliases\": [\"alt_name\"],\n      \"category\": \"domain\"\n    }\n  },\n  \"tools\": {\n    \"example_tool\": {\n      \"description\": \"What this tool does\",\n      \"url\": \"https://example.com\",\n      \"category\": \"monitoring\"\n    }\n  },\n  \"environments\": {\n    \"production\": {\n      \"description\": \"Live production environment\",\n      \"aliases\": [\"prod\"]\n    },\n    \"staging\": {\n      \"description\": \"Pre-production testing environment\",\n      \"aliases\": [\"stg\", \"hml\"]\n    }\n  },\n  \"workflows\": {\n    \"branch_naming\": {\n      \"pattern\": \"(feature|bugfix|hotfix)/PROJ-NUMBER-description\",\n      \"description\": \"Standard branch naming convention\"\n    }\n  }\n}\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "glossary",
+        "terminology",
+        "vocabulary",
+        "domain"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "organizational-context",
+      "name": "Organizational Context Template",
+      "description": "Template for documenting your organization's overview, key practices, domain knowledge, and team structure for agent consumption.\n",
+      "category": "knowledge",
+      "subcategory": "templates",
+      "files": [
+        {
+          "src": "organizational.md",
+          "dest": "context/organizational.md",
+          "content": "# Organizational Context\n\n## Overview\n<!-- Describe your organization, its mission, and what it builds -->\n\n## Team Structure\n<!-- Key teams, their responsibilities, and communication channels -->\n\n## Key Systems\n<!-- Core systems/services, their owners, and repositories -->\n\n## Development Practices\n<!-- Branching strategy, PR process, CI/CD, coding standards -->\n\n## Domain Knowledge\n<!-- Industry-specific terms, business rules, key processes -->\n\n## Communication\n<!-- Channels (Slack, Teams, etc.), escalation paths, meeting cadence -->\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "organization",
+        "context",
+        "onboarding",
+        "team"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "semantic-search",
+      "name": "Semantic Search",
+      "description": "Search tool for the agent-state repo itself. Indexes all files and supports keyword search, tag filtering, and TF-IDF ranking. Helps agents discover available tools and knowledge.\n",
+      "category": "meta",
+      "subcategory": "tooling",
+      "files": [
+        {
+          "src": "search.py",
+          "dest": "scripts/meta/search.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Semantic search for agent-state repositories.\n\nIndexes all files in the repo and supports keyword search with TF-IDF ranking.\nNo external dependencies required - uses Python stdlib only.\n\nUsage:\n    python scripts/meta/search.py \"how to create a jira ticket\"\n    python scripts/meta/search.py --tag python \"testing patterns\"\n    python scripts/meta/search.py --category integrations \"notification\"\n\"\"\"\nimport argparse\nimport json\nimport math\nimport os\nimport re\nimport sys\nfrom collections import Counter\nfrom pathlib import Path\n\n\nINDEXED_EXTENSIONS = {\".md\", \".json\", \".py\", \".yaml\", \".yml\", \".txt\"}\nSKIP_DIRS = {\".git\", \"__pycache__\", \"node_modules\", \".venv\", \"workspace\", \".agentstate-index.json\"}\nINDEX_FILE = \".agentstate-index.json\"\nMAX_SNIPPET_LEN = 200\n\n\ndef find_repo_root():\n    \"\"\"Find the root of the agent-state repo (walk up to find AGENTS.md or .git).\"\"\"\n    current = Path.cwd()\n    while current != current.parent:\n        if (current / \"AGENTS.md\").exists() or (current / \".git\").exists():\n            return current\n        current = current.parent\n    return Path.cwd()\n\n\ndef should_index(path, root):\n    \"\"\"Check if a file should be indexed.\"\"\"\n    rel = path.relative_to(root)\n    parts = rel.parts\n    if any(p in SKIP_DIRS for p in parts):\n        return False\n    return path.suffix in INDEXED_EXTENSIONS and path.is_file()\n\n\ndef extract_text(filepath):\n    \"\"\"Extract searchable text from a file.\"\"\"\n    try:\n        content = filepath.read_text(encoding=\"utf-8\", errors=\"ignore\")\n    except Exception:\n        return \"\"\n\n    if filepath.suffix == \".json\":\n        try:\n            data = json.loads(content)\n            return json.dumps(data, indent=2)\n        except json.JSONDecodeError:\n            return content\n\n    return content\n\n\ndef tokenize(text):\n    \"\"\"Simple tokenization: lowercase, split on non-alphanumeric.\"\"\"\n    return re.findall(r\"[a-z0-9]+\", text.lower())\n\n\ndef build_index(root):\n    \"\"\"Build the search index from all files in the repo.\"\"\"\n    documents = []\n    for path in sorted(root.rglob(\"*\")):\n        if not should_index(path, root):\n            continue\n        text = extract_text(path)\n        if not text.strip():\n            continue\n        rel_path = str(path.relative_to(root))\n        tokens = tokenize(text)\n        documents.append({\n            \"path\": rel_path,\n            \"content\": text[:5000],  # cap stored content\n            \"tokens\": tokens,\n            \"mtime\": path.stat().st_mtime,\n        })\n    return documents\n\n\ndef load_or_build_index(root):\n    \"\"\"Load cached index or rebuild if stale.\"\"\"\n    index_path = root / INDEX_FILE\n    if index_path.exists():\n        try:\n            cached = json.loads(index_path.read_text())\n            # Check if any file has changed\n            stale = False\n            indexed_paths = {d[\"path\"] for d in cached}\n            for path in root.rglob(\"*\"):\n                if not should_index(path, root):\n                    continue\n                rel = str(path.relative_to(root))\n                if rel not in indexed_paths:\n                    stale = True\n                    break\n                mtime = path.stat().st_mtime\n                doc = next((d for d in cached if d[\"path\"] == rel), None)\n                if doc and doc.get(\"mtime\", 0) < mtime:\n                    stale = True\n                    break\n            if not stale:\n                return cached\n        except (json.JSONDecodeError, KeyError):\n            pass\n\n    documents = build_index(root)\n    # Save cache (without tokens to keep it small)\n    cache_data = [\n        {\"path\": d[\"path\"], \"mtime\": d[\"mtime\"], \"content\": d[\"content\"]}\n        for d in documents\n    ]\n    try:\n        index_path.write_text(json.dumps(cache_data, indent=2))\n    except Exception:\n        pass  # Non-critical if caching fails\n\n    return documents\n\n\ndef compute_tfidf(query_tokens, documents):\n    \"\"\"Compute TF-IDF scores for query against documents.\"\"\"\n    n_docs = len(documents)\n    if n_docs == 0:\n        return []\n\n    # Document frequency for each term\n    df = Counter()\n    for doc in documents:\n        unique_tokens = set(doc.get(\"tokens\") or tokenize(doc.get(\"content\", \"\")))\n        for token in unique_tokens:\n            df[token] += 1\n\n    results = []\n    for doc in documents:\n        doc_tokens = doc.get(\"tokens\") or tokenize(doc.get(\"content\", \"\"))\n        if not doc_tokens:\n            continue\n        tf = Counter(doc_tokens)\n        doc_len = len(doc_tokens)\n\n        score = 0.0\n        for qt in query_tokens:\n            if qt in tf:\n                term_freq = tf[qt] / doc_len\n                inv_doc_freq = math.log((n_docs + 1) / (df.get(qt, 0) + 1)) + 1\n                score += term_freq * inv_doc_freq\n\n        if score > 0:\n            results.append((doc, score))\n\n    results.sort(key=lambda x: x[1], reverse=True)\n    return results\n\n\ndef extract_snippet(content, query_tokens, max_len=MAX_SNIPPET_LEN):\n    \"\"\"Extract a relevant snippet from content around query terms.\"\"\"\n    lower = content.lower()\n    best_pos = 0\n    best_count = 0\n\n    for i in range(0, len(lower) - 50, 20):\n        window = lower[i : i + max_len]\n        count = sum(1 for t in query_tokens if t in window)\n        if count > best_count:\n            best_count = count\n            best_pos = i\n\n    snippet = content[best_pos : best_pos + max_len].strip()\n    if best_pos > 0:\n        snippet = \"...\" + snippet\n    if best_pos + max_len < len(content):\n        snippet = snippet + \"...\"\n    return snippet.replace(\"\\n\", \" \")\n\n\ndef search(query, root=None, tag_filter=None, category_filter=None, limit=10):\n    \"\"\"Search the agent-state repo.\"\"\"\n    if root is None:\n        root = find_repo_root()\n\n    documents = load_or_build_index(root)\n    query_tokens = tokenize(query)\n\n    if not query_tokens:\n        return []\n\n    # Apply filters\n    if category_filter:\n        documents = [d for d in documents if category_filter in d[\"path\"].split(\"/\")[0:2]]\n    if tag_filter:\n        tag_lower = tag_filter.lower()\n        documents = [\n            d for d in documents\n            if tag_lower in d.get(\"content\", \"\").lower()\n        ]\n\n    results = compute_tfidf(query_tokens, documents)\n\n    output = []\n    for doc, score in results[:limit]:\n        snippet = extract_snippet(doc.get(\"content\", \"\"), query_tokens)\n        output.append({\n            \"path\": doc[\"path\"],\n            \"score\": round(score, 4),\n            \"snippet\": snippet,\n        })\n\n    return output\n\n\ndef main():\n    parser = argparse.ArgumentParser(\n        description=\"Search your agent-state repository\"\n    )\n    parser.add_argument(\"query\", help=\"Search query\")\n    parser.add_argument(\"--tag\", default=None, help=\"Filter by tag/keyword in content\")\n    parser.add_argument(\"--category\", default=None, help=\"Filter by top-level category\")\n    parser.add_argument(\"--limit\", type=int, default=10, help=\"Max results (default: 10)\")\n\n    args = parser.parse_args()\n    results = search(\n        args.query,\n        tag_filter=args.tag,\n        category_filter=args.category,\n        limit=args.limit,\n    )\n    print(json.dumps(results, indent=2))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/meta/AGENTS.md",
+          "content": "# Semantic Search\n\nSearch tool for discovering available tools, skills, and knowledge in this repository.\n\n## Usage\n\n```bash\n# Basic search\npython scripts/meta/search.py \"how to create a jira ticket\"\n\n# Filter by tag\npython scripts/meta/search.py --tag python \"testing patterns\"\n\n# Filter by category\npython scripts/meta/search.py --category integrations \"notification\"\n\n# Limit results\npython scripts/meta/search.py --limit 5 \"deployment\"\n```\n\n## Output\n\nJSON array of results ranked by relevance:\n\n```json\n[\n  {\"path\": \"scripts/integrations/jira/AGENTS.md\", \"score\": 0.92, \"snippet\": \"...\"},\n  {\"path\": \"skills/curated/python-testing-patterns.md\", \"score\": 0.67, \"snippet\": \"...\"}\n]\n```\n\n## How It Works\n\n- Indexes all .md, .json, .py, .yaml files in the repo\n- Uses TF-IDF ranking for relevance scoring\n- Caches index in `.agentstate-index.json` (auto-rebuilds when files change)\n- No external dependencies (Python stdlib only)\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "search",
+        "discovery",
+        "indexing",
+        "meta"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "analyst-mode",
+      "name": "Analyst Mode",
+      "description": "Behavioral profile for high-level reasoning, planning, and grounded analysis. Activates structured thinking, business-friendly communication, and scope discipline.\n",
+      "category": "modes",
+      "subcategory": "reasoning",
+      "files": [
+        {
+          "src": "analyst-mode.md",
+          "dest": "modes/analyst-mode.md",
+          "content": "# Analyst Mode\n\nBehavior profile for high-level reasoning, planning, and grounded analysis.\n\n---\n\nYou are in ANALYST MODE.\n\nThis mode focuses on deep reasoning, planning, and grounded analysis.\nAct as an architect, researcher, and analyst who communicates well with both engineers and business stakeholders.\n\n---\n\n## Core Behavior\n\n### 1. Structured reasoning & planning\n- Break problems into phases, decisions, risks, assumptions, and next steps.\n- Use short bullets, numbered lists, and simple diagrams when helpful.\n- Produce plans that a coding agent could implement later, but do not code unless asked.\n\n### 2. Grounded researcher behavior\n- When reviewing files, cite exact paths/sections.\n- Base conclusions on real content; avoid speculation.\n- Call out missing information clearly.\n\n### 3. Business-friendly communication\n- Highlight impact, risk, trade-offs, expected outcomes, and decision-making value.\n- Avoid unnecessary jargon.\n- Use clear language accessible to non-technical leaders.\n\n### 4. Scope discipline\n- Do not run commands or modify files unless explicitly requested.\n- Focus on analysis, diagnosis, architecture, and planning.\n- Always surface risks, unknowns, and validation strategies.\n\n### 5. Goal-oriented output\n- Restate the session goal succinctly.\n- Produce clear deliverables (e.g., \"list of changes\", \"integration plan\", \"research summary\").\n- End with recommended next steps and decision points.\n\n---\n\n## Entry Ritual\n\nBegin by asking:\n**\"What is the objective for this session?\"**\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "analysis",
+        "planning",
+        "architecture",
+        "research"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "deployment-guardrails",
+      "name": "Deployment Guardrails",
+      "description": "Rules preventing agents from deploying to unauthorized platforms. Directs agents to use your organization's standard deployment pipeline.\n",
+      "category": "modes",
+      "subcategory": "security",
+      "files": [
+        {
+          "src": "deployment-guardrails.md",
+          "dest": "modes/deployment-guardrails.md",
+          "content": "# Deployment Guardrails\n\nRules for deploying applications, dashboards, frontends, and any user-facing systems.\n\n---\n\n## Rule: Use Your Organization's Standard Infrastructure\n\nAgent-provided deployment services (e.g., built-in deploy features that create public URLs) must NOT be used to deploy production applications.\n\n**Why**: These services are typically publicly accessible, have no authentication, sit outside your infrastructure, and bypass security, observability, and access control standards.\n\n## What to Do Instead\n\nWhen a user asks to create or deploy a new application:\n\n1. **Do NOT use the agent's built-in deploy tool** (if it creates public-facing URLs).\n2. **Direct the user to your organization's Internal Developer Platform** or standard deployment pipeline.\n3. **Help the user prepare the code** (repo setup, Dockerfile, configuration, etc.) so it's ready to deploy through the standard pipeline.\n\n## Acceptable Uses of Agent Resources\n\n- Running local dev servers for testing during development (localhost)\n- Running scripts, analysis, data processing on the agent's VM\n- Using the agent's browser for manual testing\n- Temporary local previews that are NOT shared externally\n\n## Never Acceptable\n\n- Deploying any app to agent-provided public URLs\n- Sharing agent-hosted URLs as \"the app\" or \"the dashboard\"\n- Bypassing your standard deployment provisioning for speed or convenience\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "deployment",
+        "security",
+        "guardrails",
+        "infrastructure"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "resource-limit-enforcement",
+      "name": "Resource Limit Enforcement",
+      "description": "Automatic session handoff when approaching resource or cost limits. Spawns a new session with full context before the current one expires.\n",
+      "category": "modes",
+      "subcategory": "resource-management",
+      "files": [
+        {
+          "src": "resource-limit-enforcement.md",
+          "dest": "modes/resource-limit-enforcement.md",
+          "content": "# Resource Limit Enforcement & Automatic Handoff Protocol\n\nBehavior profile that enforces session resource limits, triggers automatic handoff, and monitors continued usage.\n\n---\n\n## Trigger\n\nThis flow activates when a session is approaching or has exceeded the configured resource limit.\n\n---\n\n## Phase 1: Proactive Alert (at ~80% of limit)\n\nWhen the session reaches approximately 80% of the resource limit:\n\n1. **Alert the user** that the session is approaching the limit.\n2. **Automatically spawn a new session** with full handoff context:\n   - Original task description\n   - Work completed so far\n   - Open PRs and CI status\n   - Current branch/repo\n   - Pending items and next steps\n3. **Share the new session link** with the user and suggest they continue work there.\n\n---\n\n## Phase 2: Post-Limit Warning\n\nIf the user sends any new message after the limit has been reached, warn them that continued usage will incur additional costs, and recommend switching to the new session.\n\n---\n\n## Phase 3: Continued Usage Monitoring\n\nIf the user continues after the warning:\n\n1. Send a notification (e.g., via Telegram) documenting the over-limit usage.\n2. Continue working on the request normally.\n3. Repeat the warning cycle for every additional ~20% consumed beyond the limit.\n\n---\n\n## Key Principles\n\n- The handoff session MUST be spawned automatically — do not just suggest it, actually create it.\n- The warning must be sent before any other response when over limit.\n- Notifications are mandatory for continued usage past the limit.\n- This protocol applies to ALL sessions, regardless of task type.\n\n---\n\n## Dependencies\n\n- An agent platform API client for spawning sessions\n- Optionally: Telegram notification integration for over-limit alerts\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [
+        {
+          "name": "AGENT_API_KEY",
+          "description": "API key for your agent platform",
+          "required": true
+        },
+        {
+          "name": "RESOURCE_LIMIT",
+          "description": "Maximum resource units per session (e.g., 5)",
+          "required": false
+        }
+      ],
+      "tags": [
+        "resource-limits",
+        "handoff",
+        "cost-management",
+        "session-management"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "devin"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "multi-layer-handoff",
+      "name": "Multi-Layer Orchestration Handoff",
+      "description": "Template for multi-layer orchestration with Root, L2 Orchestrators, and Agents. Includes branching strategy, monitoring loops, state tracking, and handoff policies.\n",
+      "category": "orchestration",
+      "subcategory": "multi-agent",
+      "files": [
+        {
+          "src": "multi-layer-orchestration-handoff.md",
+          "dest": "orchestration/multi-layer-orchestration-handoff.md",
+          "content": "# Multi-Layer Orchestration Handoff Template\n\n**Purpose**: Generic handoff template for multi-layer orchestration projects with Root -> L2 Orchestrators -> Agents architecture.\n\n---\n\n## Parameters (Replace Before Use)\n\n```\n{{REPO}}                    = Repository name\n{{ROOT_FEATURE_BRANCH}}     = Root feature branch (e.g., feature/my-project)\n{{AGENT_API_KEY}}           = Agent platform API key (env var name)\n{{AGENT_API_BASE}}          = Agent platform API base URL\n{{RESOURCE_HANDOFF}}        = Handoff threshold (e.g., 3.5 units)\n{{STATE_FILE}}              = Path to state tracking file\n```\n\n---\n\n## Roles & Reporting Chain\n\n- **Agents** -> Report to **Level-2 Orchestrators (L2)**\n- **L2 Orchestrators** -> Report to **Root Orchestrator**\n- **Root Orchestrator** -> Only blocks on user if blocking question exists\n\n---\n\n## Branching & PR Flow (Feature-over-Feature)\n\n1. Root creates `{{ROOT_FEATURE_BRANCH}}` from base branch\n2. Each L2/Agent creates feature branch from `{{ROOT_FEATURE_BRANCH}}`\n3. **All PRs target `{{ROOT_FEATURE_BRANCH}}`** (NOT main)\n4. **Agents open PRs** -> **L2 reviews/approves** -> **Agents merge** when CI passes\n5. Root creates final integration PR from `{{ROOT_FEATURE_BRANCH}}` -> main when complete\n\n---\n\n## Active Monitoring (60s, Non-Blocking)\n\nRoot & L2 orchestrators poll sub-sessions every 60 seconds.\n\n**Rules**:\n- Report progress **non-blocking** (don't wait for user response)\n- Keep messages **minimal** (save resources)\n- **Only block on user** if Root has a blocking question\n\n---\n\n## Event Schema (Upward Reporting)\n\nAgents/L2 emit events to parent orchestrator:\n\n```json\n{\n  \"type\": \"milestone|status|blocker\",\n  \"component\": \"{{component_name}}\",\n  \"name\": \"{{event_name}}\",\n  \"artifacts\": {\n    \"pr_url\": \"https://github.com/...\",\n    \"key\": \"value\"\n  },\n  \"timestamp\": \"2025-11-19T10:00:00Z\",\n  \"next_steps\": [\"step1\", \"step2\"],\n  \"session_id\": \"{{SUB_SESSION_ID}}\"\n}\n```\n\n---\n\n## State File (Single Source of Truth)\n\n**Path**: `{{STATE_FILE}}`\n\n```json\n{\n  \"sessions\": [\n    {\n      \"id\": \"{{SESSION_ID}}\",\n      \"role\": \"agent|l2|root\",\n      \"component\": \"{{component_name}}\",\n      \"status\": \"active|completed|blocked\",\n      \"pr_url\": \"https://github.com/...\"\n    }\n  ],\n  \"milestones\": [\n    {\n      \"name\": \"{{milestone_name}}\",\n      \"status\": \"pending|completed\",\n      \"timestamp\": \"2025-11-19T10:00:00Z\"\n    }\n  ],\n  \"last_update\": \"2025-11-19T10:00:00Z\",\n  \"resources_used\": 0.0\n}\n```\n\n**Update after every significant event**.\n\n---\n\n## Handoff Policy (Root Only)\n\n- **Only Root Orchestrator** performs handoff\n- **Handoff when**: Resource usage >= `{{RESOURCE_HANDOFF}}`\n- **Handoff includes**:\n  - Current session ID\n  - Open items and blockers\n  - All PR links and CI status\n  - Sub-session states (active/completed)\n  - State file path\n  - Next steps\n\n---\n\n## Messaging Policy\n\n**DO**:\n- Keep messages **shortest possible**\n- Report **significant events only** (milestone, blocker, completion)\n- Use **non-blocking messages** for progress updates\n\n**DON'T**:\n- Block on user unless Root has a **blocking question**\n- Send verbose explanations or unnecessary updates\n- Wait for user acknowledgment of progress reports\n\n---\n\n## Architecture Diagram\n\n```\nRoot Orchestrator (this session)\n    |-> L2 Orchestrator 1\n    |       |-> Agent 1.1 (feature/component-a)\n    |       |-> Agent 1.2 (feature/component-b)\n    |\n    |-> L2 Orchestrator 2\n    |       |-> Agent 2.1 (feature/component-c)\n    |       |-> Agent 2.2 (feature/component-d)\n    |\n    |-> L2 Orchestrator 3\n            |-> Agent 3.1 (feature/component-e)\n\nAll PRs -> {{ROOT_FEATURE_BRANCH}}\nFinal PR: {{ROOT_FEATURE_BRANCH}} -> main\n```\n\n---\n\n## Git & PR Guidelines\n\n**PR Requirements**:\n- Target: `{{ROOT_FEATURE_BRANCH}}`\n- Include session link in description\n\n**Git Rules**:\n- NEVER force push\n- NEVER skip hooks (--no-verify)\n- NEVER amend commits\n- NEVER push directly to main\n\n---\n\n## Checklists\n\n### Immediate Actions (First 10 Minutes)\n- [ ] Create `{{ROOT_FEATURE_BRANCH}}` from base\n- [ ] Spawn L2 orchestrators\n- [ ] L2 spawn Agents\n- [ ] Initialize `{{STATE_FILE}}`\n- [ ] Start 60-second monitoring loop\n\n### Ongoing Operations\n- [ ] Agents implement features -> open PRs to `{{ROOT_FEATURE_BRANCH}}`\n- [ ] L2 reviews PRs -> Agents merge when CI passes\n- [ ] Update `{{STATE_FILE}}` after each milestone\n- [ ] Report concise progress (non-blocking)\n- [ ] Monitor resource usage\n\n### Handoff (Root Only)\n- [ ] Document current session ID\n- [ ] List all open PRs and CI status\n- [ ] List all sub-session states\n- [ ] Document blockers and next steps\n- [ ] Create handoff document\n- [ ] Spawn new Root Orchestrator\n\n---\n\n## Success Criteria\n\n- [ ] All Agents completed their work\n- [ ] All PRs merged to `{{ROOT_FEATURE_BRANCH}}`\n- [ ] All CI checks passing\n- [ ] All milestones achieved\n- [ ] Documentation complete\n- [ ] Final integration PR ready\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [
+        {
+          "name": "AGENT_API_KEY",
+          "description": "API key for spawning sub-sessions",
+          "required": true
+        }
+      ],
+      "tags": [
+        "orchestration",
+        "multi-agent",
+        "handoff",
+        "coordination"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "devin"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "session-spawner",
+      "name": "Session Spawner",
+      "description": "Scripts for spawning and monitoring agent sessions via API. Used by orchestrators and for self-continuation when approaching resource limits.\n",
+      "category": "orchestration",
+      "subcategory": "session-management",
+      "files": [
+        {
+          "src": "spawn_session.py",
+          "dest": "scripts/orchestration/spawn_session.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Spawn a new agent session via the Devin API.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\ndef spawn_session(repo, task, context=None):\n    \"\"\"Spawn a new Devin session.\"\"\"\n    api_token = os.environ.get(\"DEVIN_API\")\n    if not api_token:\n        print('{\"error\": \"DEVIN_API environment variable not set\"}', file=sys.stderr)\n        sys.exit(1)\n\n    base_url = \"https://api.devin.ai/v1\"\n    headers = {\n        \"Authorization\": f\"Bearer {api_token}\",\n        \"Content-Type\": \"application/json\",\n    }\n\n    payload = {\"repo\": repo, \"task\": task}\n    if context:\n        payload[\"context\"] = context\n\n    try:\n        response = requests.post(\n            f\"{base_url}/sessions\",\n            headers=headers,\n            json=payload,\n            timeout=30,\n        )\n        response.raise_for_status()\n        return response.json()\n    except requests.exceptions.RequestException as e:\n        return {\"error\": str(e), \"status_code\": getattr(e.response, \"status_code\", None)}\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Spawn a new Devin session\")\n    parser.add_argument(\"--repo\", required=True, help=\"Repository for the session\")\n    parser.add_argument(\"--task\", required=True, help=\"Task description\")\n    parser.add_argument(\"--context\", default=None, help=\"Additional context\")\n\n    args = parser.parse_args()\n    result = spawn_session(args.repo, args.task, args.context)\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "monitor_session.py",
+          "dest": "scripts/orchestration/monitor_session.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Monitor a Devin session status.\"\"\"\nimport argparse\nimport json\nimport os\nimport sys\nimport requests\n\n\ndef get_session_status(session_id):\n    \"\"\"Get status of a Devin session.\"\"\"\n    api_token = os.environ.get(\"DEVIN_API\")\n    if not api_token:\n        print('{\"error\": \"DEVIN_API environment variable not set\"}', file=sys.stderr)\n        sys.exit(1)\n\n    base_url = \"https://api.devin.ai/v1\"\n    headers = {\n        \"Authorization\": f\"Bearer {api_token}\",\n        \"Content-Type\": \"application/json\",\n    }\n\n    try:\n        response = requests.get(\n            f\"{base_url}/sessions/{session_id}\",\n            headers=headers,\n            timeout=30,\n        )\n        response.raise_for_status()\n        return response.json()\n    except requests.exceptions.RequestException as e:\n        return {\"error\": str(e), \"status_code\": getattr(e.response, \"status_code\", None)}\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Monitor a Devin session\")\n    parser.add_argument(\"session_id\", help=\"Session ID to monitor\")\n\n    args = parser.parse_args()\n    result = get_session_status(args.session_id)\n    print(json.dumps(result, indent=2))\n\n    if \"error\" in result:\n        sys.exit(1)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/orchestration/AGENTS.md",
+          "content": "# Session Spawner & Monitor\n\nScripts for spawning and monitoring Devin sessions.\n\n## Usage\n\n```bash\n# Spawn a new session\npython scripts/orchestration/spawn_session.py --repo org/my-repo --task \"Implement feature X\"\n\n# Spawn with context\npython scripts/orchestration/spawn_session.py --repo org/my-repo --task \"Continue work\" --context \"Previous PR: #123\"\n\n# Monitor a session\npython scripts/orchestration/monitor_session.py <session-id>\n```\n\n## Environment Variables\n\n- `DEVIN_API` (required): Bearer token for the Devin API\n"
+        }
+      ],
+      "python_dependencies": [
+        "requests>=2.31.0"
+      ],
+      "env_vars": [
+        {
+          "name": "DEVIN_API",
+          "description": "Bearer token for the Devin API",
+          "required": true
+        }
+      ],
+      "tags": [
+        "orchestration",
+        "sessions",
+        "spawning",
+        "monitoring"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "devin"
+      ],
+      "depends_on": [
+        "devin-integration"
+      ],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
+      "id": "api-design-principles",
+      "name": "API Design Principles",
+      "description": "REST/API design patterns",
+      "category": "skills",
+      "subcategory": "backend",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/api-design-principles.md",
+          "content": "# API Design Principles\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "api",
+        "design",
+        "principles",
+        "backend"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/backend-development/skills/api-design-principles/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "architecture-patterns",
+      "name": "Architecture Patterns",
+      "description": "Software architecture patterns",
+      "category": "skills",
+      "subcategory": "backend",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/architecture-patterns.md",
+          "content": "# Architecture Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "architecture",
+        "patterns",
+        "backend"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/backend-development/skills/architecture-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "error-handling-patterns",
+      "name": "Error Handling Patterns",
+      "description": "Error handling strategies",
+      "category": "skills",
+      "subcategory": "backend",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/error-handling-patterns.md",
+          "content": "# Error Handling Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "error",
+        "handling",
+        "patterns",
+        "backend"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/developer-essentials/skills/error-handling-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "nodejs-backend-patterns",
+      "name": "Node.js Backend Patterns",
+      "description": "Node.js backend patterns",
+      "category": "skills",
+      "subcategory": "backend",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/nodejs-backend-patterns.md",
+          "content": "# Node.js Backend Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "nodejs",
+        "backend",
+        "patterns",
+        "backend"
+      ],
+      "tech_tags": [
+        "javascript"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/javascript-typescript/skills/nodejs-backend-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "database-schema-designer",
+      "name": "Database Schema Designer",
+      "description": "Schema design patterns",
+      "category": "skills",
+      "subcategory": "database",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/database-schema-designer.md",
+          "content": "# Database Schema Designer\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "database",
+        "schema",
+        "designer",
+        "database"
+      ],
+      "tech_tags": [
+        "sql"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "softaworks/agent-toolkit",
+        "path": "skills/database-schema-designer/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "postgresql-table-design",
+      "name": "PostgreSQL Table Design",
+      "description": "PostgreSQL design patterns",
+      "category": "skills",
+      "subcategory": "database",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/postgresql-table-design.md",
+          "content": "# PostgreSQL Table Design\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "postgresql",
+        "table",
+        "design",
+        "database"
+      ],
+      "tech_tags": [
+        "sql"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/database-design/skills/postgresql/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "sql-optimization-patterns",
+      "name": "SQL Optimization Patterns",
+      "description": "Query optimization",
+      "category": "skills",
+      "subcategory": "database",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/sql-optimization-patterns.md",
+          "content": "# SQL Optimization Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "sql",
+        "optimization",
+        "patterns",
+        "database"
+      ],
+      "tech_tags": [
+        "sql"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "github-actions-templates",
+      "name": "GitHub Actions Templates",
+      "description": "CI/CD patterns",
+      "category": "skills",
+      "subcategory": "devops",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/github-actions-templates.md",
+          "content": "# GitHub Actions Templates\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "github",
+        "actions",
+        "templates",
+        "devops"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/cicd-automation/skills/github-actions-templates/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "c4-architecture",
+      "name": "C4 Architecture",
+      "description": "C4 architecture diagrams",
+      "category": "skills",
+      "subcategory": "documentation",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/c4-architecture.md",
+          "content": "# C4 Architecture\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "c4",
+        "architecture",
+        "documentation"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "softaworks/agent-toolkit",
+        "path": "skills/c4-architecture/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "mermaid-diagrams",
+      "name": "Mermaid Diagrams",
+      "description": "Diagram creation",
+      "category": "skills",
+      "subcategory": "documentation",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/mermaid-diagrams.md",
+          "content": "# Mermaid Diagrams\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "mermaid",
+        "diagrams",
+        "documentation"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "softaworks/agent-toolkit",
+        "path": "skills/mermaid-diagrams/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "frontend-design",
+      "name": "Frontend Design",
+      "description": "UI best practices",
+      "category": "skills",
+      "subcategory": "frontend",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/frontend-design.md",
+          "content": "# Frontend Design\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "frontend",
+        "design",
+        "frontend"
+      ],
+      "tech_tags": [
+        "javascript"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "anthropics/skills",
+        "path": "skills/frontend-design/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "modern-javascript-patterns",
+      "name": "Modern JavaScript Patterns",
+      "description": "ES6+ patterns",
+      "category": "skills",
+      "subcategory": "javascript",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/modern-javascript-patterns.md",
+          "content": "# Modern JavaScript Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "modern",
+        "javascript",
+        "patterns",
+        "javascript"
+      ],
+      "tech_tags": [
+        "javascript"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/javascript-typescript/skills/modern-javascript-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "async-python-patterns",
+      "name": "Async Python Patterns",
+      "description": "AsyncIO and concurrency",
+      "category": "skills",
+      "subcategory": "python",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/async-python-patterns.md",
+          "content": "# Async Python Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "async",
+        "python",
+        "patterns",
+        "python"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/python-development/skills/async-python-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "python-performance-optimization",
+      "name": "Python Performance Optimization",
+      "description": "Python optimization techniques",
+      "category": "skills",
+      "subcategory": "python",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/python-performance-optimization.md",
+          "content": "# Python Performance Optimization\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "python",
+        "performance",
+        "optimization",
+        "python"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/python-development/skills/python-performance-optimization/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "python-testing-patterns",
+      "name": "Python Testing Patterns",
+      "description": "pytest, fixtures, mocking",
+      "category": "skills",
+      "subcategory": "python",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/python-testing-patterns.md",
+          "content": "# Python Testing Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "python",
+        "testing",
+        "patterns",
+        "python"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/python-development/skills/python-testing-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "code-review-excellence",
+      "name": "Code Review Excellence",
+      "description": "PR review guidelines",
+      "category": "skills",
+      "subcategory": "quality",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/code-review-excellence.md",
+          "content": "# Code Review Excellence\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "code",
+        "review",
+        "excellence",
+        "quality"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/developer-essentials/skills/code-review-excellence/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "debugging-strategies",
+      "name": "Debugging Strategies",
+      "description": "General debugging approaches",
+      "category": "skills",
+      "subcategory": "quality",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/debugging-strategies.md",
+          "content": "# Debugging Strategies\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "debugging",
+        "strategies",
+        "quality"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/developer-essentials/skills/debugging-strategies/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "e2e-testing-patterns",
+      "name": "E2E Testing Patterns",
+      "description": "End-to-end testing",
+      "category": "skills",
+      "subcategory": "testing",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/e2e-testing-patterns.md",
+          "content": "# E2E Testing Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "e2e",
+        "testing",
+        "patterns",
+        "testing"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "javascript-testing-patterns",
+      "name": "JavaScript Testing Patterns",
+      "description": "JavaScript testing",
+      "category": "skills",
+      "subcategory": "testing",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/javascript-testing-patterns.md",
+          "content": "# JavaScript Testing Patterns\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "javascript",
+        "testing",
+        "patterns",
+        "testing"
+      ],
+      "tech_tags": [
+        "javascript"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/javascript-typescript/skills/javascript-testing-patterns/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "webapp-testing",
+      "name": "Webapp Testing",
+      "description": "Web application testing",
+      "category": "skills",
+      "subcategory": "testing",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/webapp-testing.md",
+          "content": "# Webapp Testing\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "webapp",
+        "testing",
+        "testing"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "anthropics/skills",
+        "path": "skills/webapp-testing/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "typescript-advanced-types",
+      "name": "TypeScript Advanced Types",
+      "description": "TypeScript patterns",
+      "category": "skills",
+      "subcategory": "typescript",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/typescript-advanced-types.md",
+          "content": "# TypeScript Advanced Types\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "typescript",
+        "advanced",
+        "types",
+        "typescript"
+      ],
+      "tech_tags": [
+        "typescript"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "wshobson/agents",
+        "path": "plugins/javascript-typescript/skills/typescript-advanced-types/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "brainstorming",
+      "name": "Brainstorming",
+      "description": "Socratic design refinement",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/brainstorming.md",
+          "content": "# Brainstorming\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "brainstorming",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/brainstorming/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "executing-plans",
+      "name": "Executing Plans",
+      "description": "Batch execution with checkpoints",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/executing-plans.md",
+          "content": "# Executing Plans\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "executing",
+        "plans",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/executing-plans/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "receiving-code-review",
+      "name": "Receiving Code Review",
+      "description": "Responding to feedback",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/receiving-code-review.md",
+          "content": "# Receiving Code Review\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "receiving",
+        "code",
+        "review",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/receiving-code-review/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "requesting-code-review",
+      "name": "Requesting Code Review",
+      "description": "Pre-review checklist",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/requesting-code-review.md",
+          "content": "# Requesting Code Review\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "requesting",
+        "code",
+        "review",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/requesting-code-review/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "systematic-debugging",
+      "name": "Systematic Debugging",
+      "description": "4-phase root cause analysis process",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/systematic-debugging.md",
+          "content": "# Systematic Debugging\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "systematic",
+        "debugging",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/systematic-debugging/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "test-driven-development",
+      "name": "Test-Driven Development",
+      "description": "RED-GREEN-REFACTOR cycle",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/test-driven-development.md",
+          "content": "# Test-Driven Development\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "test",
+        "driven",
+        "development",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/test-driven-development/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "verification-before-completion",
+      "name": "Verification Before Completion",
+      "description": "Verify fixes before declaring done",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/verification-before-completion.md",
+          "content": "# Verification Before Completion\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "verification",
+        "before",
+        "completion",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/verification-before-completion/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    },
+    {
+      "id": "writing-plans",
+      "name": "Writing Plans",
+      "description": "Detailed implementation plans",
+      "category": "skills",
+      "subcategory": "workflow",
+      "files": [
+        {
+          "src": "SKILL.md",
+          "dest": "skills/curated/writing-plans.md",
+          "content": "# Writing Plans\n\nContent will be synced from upstream.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "writing",
+        "plans",
+        "workflow"
+      ],
+      "tech_tags": [],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "mirror",
+        "repo": "obra/superpowers",
+        "path": "skills/writing-plans/SKILL.md",
+        "last_synced": "2026-03-03"
+      }
+    }
+  ],
+  "categories": [
+    {
+      "id": "integrations",
+      "name": "Integrations",
+      "description": "Scripts connecting agents to external services"
+    },
+    {
+      "id": "knowledge",
+      "name": "Knowledge Templates",
+      "description": "Organizational context and memory templates"
+    },
+    {
+      "id": "meta",
+      "name": "Meta Tools",
+      "description": "Tools for the agent-state repo itself"
+    },
+    {
+      "id": "modes",
+      "name": "Behavioral Modes",
+      "description": "Behavior profiles that change how agents operate"
+    },
+    {
+      "id": "orchestration",
+      "name": "Orchestration",
+      "description": "Multi-agent coordination and handoff patterns"
+    },
+    {
+      "id": "skills",
+      "name": "Agent Skills",
+      "description": "Reusable procedural knowledge from the agents.sh ecosystem"
+    }
+  ]
+}

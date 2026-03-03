@@ -1,0 +1,31 @@
+id: systematic-debugging
+name: Systematic Debugging
+description: "4-phase root cause analysis process"
+category: skills
+subcategory: workflow
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/systematic-debugging.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - systematic
+  - debugging
+  - workflow
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "obra/superpowers"
+  path: "skills/systematic-debugging/SKILL.md"
+  last_synced: "2026-03-03"

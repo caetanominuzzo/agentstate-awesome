@@ -1,0 +1,35 @@
+id: multi-layer-handoff
+name: Multi-Layer Orchestration Handoff
+description: >
+  Template for multi-layer orchestration with Root, L2 Orchestrators, and Agents.
+  Includes branching strategy, monitoring loops, state tracking, and handoff policies.
+category: orchestration
+subcategory: multi-agent
+
+files:
+  - src: multi-layer-orchestration-handoff.md
+    dest: orchestration/multi-layer-orchestration-handoff.md
+
+python_dependencies: []
+
+env_vars:
+  - name: AGENT_API_KEY
+    description: "API key for spawning sub-sessions"
+    required: true
+
+tags:
+  - orchestration
+  - multi-agent
+  - handoff
+  - coordination
+
+tech_tags: []
+
+compatible_agents:
+  - devin
+
+depends_on: []
+featured: true
+
+source:
+  type: original

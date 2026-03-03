@@ -1,0 +1,38 @@
+id: resource-limit-enforcement
+name: Resource Limit Enforcement
+description: >
+  Automatic session handoff when approaching resource or cost limits.
+  Spawns a new session with full context before the current one expires.
+category: modes
+subcategory: resource-management
+
+files:
+  - src: resource-limit-enforcement.md
+    dest: modes/resource-limit-enforcement.md
+
+python_dependencies: []
+
+env_vars:
+  - name: AGENT_API_KEY
+    description: "API key for your agent platform"
+    required: true
+  - name: RESOURCE_LIMIT
+    description: "Maximum resource units per session (e.g., 5)"
+    required: false
+
+tags:
+  - resource-limits
+  - handoff
+  - cost-management
+  - session-management
+
+tech_tags: []
+
+compatible_agents:
+  - devin
+
+depends_on: []
+featured: false
+
+source:
+  type: original

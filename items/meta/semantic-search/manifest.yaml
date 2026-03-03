@@ -1,0 +1,36 @@
+id: semantic-search
+name: Semantic Search
+description: >
+  Search tool for the agent-state repo itself. Indexes all files and supports
+  keyword search, tag filtering, and TF-IDF ranking. Helps agents discover
+  available tools and knowledge.
+category: meta
+subcategory: tooling
+
+files:
+  - src: search.py
+    dest: scripts/meta/search.py
+  - src: AGENTS.md
+    dest: scripts/meta/AGENTS.md
+
+python_dependencies: []
+
+env_vars: []
+
+tags:
+  - search
+  - discovery
+  - indexing
+  - meta
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

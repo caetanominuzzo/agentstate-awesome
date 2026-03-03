@@ -1,0 +1,31 @@
+id: deployment-guardrails
+name: Deployment Guardrails
+description: >
+  Rules preventing agents from deploying to unauthorized platforms.
+  Directs agents to use your organization's standard deployment pipeline.
+category: modes
+subcategory: security
+
+files:
+  - src: deployment-guardrails.md
+    dest: modes/deployment-guardrails.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - deployment
+  - security
+  - guardrails
+  - infrastructure
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,8 @@
+{
+  "example-system": {
+    "owner": "example_developer",
+    "description": "Core API service handling user requests",
+    "tech_stack": ["python", "fastapi", "postgresql"],
+    "repository": "org/example-system"
+  }
+}

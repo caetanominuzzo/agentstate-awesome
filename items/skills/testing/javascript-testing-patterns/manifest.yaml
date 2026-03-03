@@ -1,0 +1,33 @@
+id: javascript-testing-patterns
+name: JavaScript Testing Patterns
+description: "JavaScript testing"
+category: skills
+subcategory: testing
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/javascript-testing-patterns.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - javascript
+  - testing
+  - patterns
+  - testing
+
+tech_tags:
+  - javascript
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "wshobson/agents"
+  path: "plugins/javascript-typescript/skills/javascript-testing-patterns/SKILL.md"
+  last_synced: "2026-03-03"

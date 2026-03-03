@@ -1,0 +1,42 @@
+id: telegram-notifications
+name: Telegram Notifications
+description: >
+  Send notifications and formatted alerts via Telegram Bot API.
+  Supports plain messages, structured alerts with severity levels, and bot connectivity checks.
+category: integrations
+subcategory: notifications
+
+files:
+  - src: telegram_notify.py
+    dest: scripts/integrations/telegram/telegram_notify.py
+  - src: AGENTS.md
+    dest: scripts/integrations/telegram/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: TELEGRAM_BOT_TOKEN
+    description: "Bot token from @BotFather"
+    required: true
+  - name: TELEGRAM_CHAT_ID
+    description: "Target chat/group/channel ID for notifications"
+    required: true
+
+tags:
+  - telegram
+  - notifications
+  - alerts
+  - messaging
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

@@ -1,0 +1,143 @@
+{
+  "agent_rules": {
+    "description": "Core principles and rules for AI agents working on repositories",
+    "version": "1.0.0",
+    "principles": {
+      "think_first": {
+        "rule": "Think first. Code later.",
+        "priority": 1,
+        "description": "Always plan and understand before implementing"
+      },
+      "search_before_creating": {
+        "rule": "Search before creating anything.",
+        "priority": 2,
+        "description": "Check if similar code, patterns, or solutions already exist"
+      },
+      "use_real_references": {
+        "rule": "Use real reference tools (Find References, Find Usages), not plain text search.",
+        "priority": 3,
+        "description": "Use LSP tools (goto_references, goto_definition) for code analysis"
+      },
+      "follow_existing_patterns": {
+        "rule": "Follow the closest existing pattern.",
+        "priority": 4,
+        "description": "Consistency with existing codebase is more important than personal preferences"
+      },
+      "small_steps": {
+        "rule": "Small steps; each one must run.",
+        "priority": 5,
+        "description": "Make incremental changes that can be tested independently"
+      },
+      "verify_everything": {
+        "rule": "Verify everything; never assume.",
+        "priority": 6,
+        "description": "Test and validate all changes"
+      },
+      "maintenance_cost": {
+        "rule": "Maintenance is the real cost.",
+        "priority": 7,
+        "description": "Write code that is easy to maintain, not just easy to write"
+      },
+      "big_picture_first": {
+        "rule": "Look at the big picture before touching details.",
+        "priority": 8,
+        "description": "Understand the overall architecture before making changes"
+      },
+      "boring_solutions": {
+        "rule": "Prefer boring, predictable solutions.",
+        "priority": 9,
+        "description": "Simple, well-understood approaches over clever or novel ones"
+      },
+      "one_change_at_time": {
+        "rule": "One change at a time.",
+        "priority": 10,
+        "description": "Make atomic changes that can be reviewed and tested independently"
+      },
+      "data_over_intuition": {
+        "rule": "Logs and data beat intuition.",
+        "priority": 11,
+        "description": "Base decisions on evidence, not assumptions"
+      },
+      "reduce_scope_when_stuck": {
+        "rule": "If stuck, reduce the scope.",
+        "priority": 12,
+        "description": "Simplify the problem rather than adding complexity"
+      },
+      "clear_communication": {
+        "rule": "Keep communication short, clear, and early.",
+        "priority": 13,
+        "description": "Communicate proactively and concisely"
+      },
+      "ask_questions": {
+        "rule": "Ask questions when context is missing.",
+        "priority": 14,
+        "description": "Don't proceed with incomplete information"
+      },
+      "no_assumptions": {
+        "rule": "Don't make assumptions about user intent.",
+        "priority": 15,
+        "description": "Clarify requirements rather than guessing"
+      },
+      "document_reasoning": {
+        "rule": "Document reasoning when it matters.",
+        "priority": 16,
+        "description": "Explain non-obvious decisions for future reference"
+      },
+      "no_multitasking": {
+        "rule": "Don't multitask; finish the current thread.",
+        "priority": 17,
+        "description": "Complete one task before starting another"
+      },
+      "slow_down_when_uncertain": {
+        "rule": "If tired, confused, or uncertain, slow down.",
+        "priority": 18,
+        "description": "Take time to understand rather than rushing"
+      },
+      "consistency_over_cleverness": {
+        "rule": "Consistency beats cleverness.",
+        "priority": 19,
+        "description": "Predictable code is better than clever code"
+      },
+      "verify_target": {
+        "rule": "Always confirm you're modifying the correct repo, branch, and file.",
+        "priority": 20,
+        "description": "Double-check context before making changes"
+      },
+      "do_only_what_asked": {
+        "rule": "Do only what was asked - nothing extra.",
+        "priority": 21,
+        "description": "Avoid scope creep and unnecessary changes"
+      }
+    },
+    "categories": {
+      "planning": ["think_first", "search_before_creating", "big_picture_first", "reduce_scope_when_stuck"],
+      "code_quality": ["use_real_references", "follow_existing_patterns", "small_steps", "boring_solutions", "one_change_at_time", "consistency_over_cleverness", "maintenance_cost"],
+      "verification": ["verify_everything", "data_over_intuition", "verify_target"],
+      "communication": ["clear_communication", "ask_questions", "no_assumptions", "document_reasoning"],
+      "focus": ["no_multitasking", "slow_down_when_uncertain", "do_only_what_asked"]
+    },
+    "quick_reference": [
+      "Think first. Code later.",
+      "Search before creating anything.",
+      "Use real reference tools, not plain text search.",
+      "Follow the closest existing pattern.",
+      "Small steps; each one must run.",
+      "Verify everything; never assume.",
+      "Maintenance is the real cost.",
+      "Look at the big picture before touching details.",
+      "Prefer boring, predictable solutions.",
+      "One change at a time.",
+      "Logs and data beat intuition.",
+      "If stuck, reduce the scope.",
+      "Keep communication short, clear, and early.",
+      "Ask questions when context is missing.",
+      "Don't make assumptions about user intent.",
+      "Document reasoning when it matters.",
+      "Don't multitask; finish the current thread.",
+      "If tired, confused, or uncertain, slow down.",
+      "Consistency beats cleverness.",
+      "Always confirm you're modifying the correct repo, branch, and file.",
+      "Do only what was asked - nothing extra."
+    ]
+  }
+}

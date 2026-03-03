@@ -1,0 +1,32 @@
+id: error-handling-patterns
+name: Error Handling Patterns
+description: "Error handling strategies"
+category: skills
+subcategory: backend
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/error-handling-patterns.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - error
+  - handling
+  - patterns
+  - backend
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "wshobson/agents"
+  path: "plugins/developer-essentials/skills/error-handling-patterns/SKILL.md"
+  last_synced: "2026-03-03"

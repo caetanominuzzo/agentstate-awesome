@@ -1,0 +1,33 @@
+id: database-schema-designer
+name: Database Schema Designer
+description: "Schema design patterns"
+category: skills
+subcategory: database
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/database-schema-designer.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - database
+  - schema
+  - designer
+  - database
+
+tech_tags:
+  - sql
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "softaworks/agent-toolkit"
+  path: "skills/database-schema-designer/SKILL.md"
+  last_synced: "2026-03-03"

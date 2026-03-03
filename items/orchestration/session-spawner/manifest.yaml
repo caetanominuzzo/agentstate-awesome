@@ -1,0 +1,43 @@
+id: session-spawner
+name: Session Spawner
+description: >
+  Scripts for spawning and monitoring agent sessions via API.
+  Used by orchestrators and for self-continuation when approaching resource limits.
+category: orchestration
+subcategory: session-management
+
+files:
+  - src: spawn_session.py
+    dest: scripts/orchestration/spawn_session.py
+  - src: monitor_session.py
+    dest: scripts/orchestration/monitor_session.py
+  - src: AGENTS.md
+    dest: scripts/orchestration/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: DEVIN_API
+    description: "Bearer token for the Devin API"
+    required: true
+
+tags:
+  - orchestration
+  - sessions
+  - spawning
+  - monitoring
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - devin
+
+depends_on:
+  - devin-integration
+
+featured: false
+
+source:
+  type: original

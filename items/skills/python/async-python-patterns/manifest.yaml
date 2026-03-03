@@ -1,0 +1,33 @@
+id: async-python-patterns
+name: Async Python Patterns
+description: "AsyncIO and concurrency"
+category: skills
+subcategory: python
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/async-python-patterns.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - async
+  - python
+  - patterns
+  - python
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "wshobson/agents"
+  path: "plugins/python-development/skills/async-python-patterns/SKILL.md"
+  last_synced: "2026-03-03"

@@ -1,0 +1,32 @@
+id: requesting-code-review
+name: Requesting Code Review
+description: "Pre-review checklist"
+category: skills
+subcategory: workflow
+
+files:
+  - src: SKILL.md
+    dest: skills/curated/requesting-code-review.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - requesting
+  - code
+  - review
+  - workflow
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: mirror
+  repo: "obra/superpowers"
+  path: "skills/requesting-code-review/SKILL.md"
+  last_synced: "2026-03-03"

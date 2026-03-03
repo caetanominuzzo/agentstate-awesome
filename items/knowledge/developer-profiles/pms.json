@@ -1,0 +1,7 @@
+{
+  "example_pm": {
+    "name": "Example PM",
+    "projects": ["project-alpha", "project-beta"],
+    "context": "Manages the customer-facing product roadmap"
+  }
+}

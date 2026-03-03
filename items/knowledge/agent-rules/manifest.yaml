@@ -1,0 +1,31 @@
+id: agent-rules
+name: Agent Rules
+description: >
+  21 core principles for AI agents: think first, search before creating,
+  follow existing patterns, verify everything, prefer boring solutions.
+category: knowledge
+subcategory: principles
+
+files:
+  - src: agent_rules.json
+    dest: knowledge/agent_rules.json
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - rules
+  - principles
+  - best-practices
+  - guidelines
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

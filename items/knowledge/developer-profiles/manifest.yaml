@@ -1,0 +1,35 @@
+id: developer-profiles
+name: Developer & Team Profiles
+description: >
+  Template JSON structures for storing developer profiles, PM context,
+  and system ownership information that agents can reference.
+category: knowledge
+subcategory: templates
+
+files:
+  - src: developers.json
+    dest: memory/developers.json
+  - src: pms.json
+    dest: memory/pms.json
+  - src: systems.json
+    dest: memory/systems.json
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - developers
+  - teams
+  - profiles
+  - memory
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

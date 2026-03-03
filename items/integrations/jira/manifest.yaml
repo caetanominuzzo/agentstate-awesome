@@ -1,0 +1,49 @@
+id: jira-integration
+name: Jira Integration
+description: >
+  CLI tool for creating, updating, commenting on, and searching Jira tickets.
+  Gives agents direct access to your Jira project via the REST API.
+category: integrations
+subcategory: project-management
+
+files:
+  - src: jira_cli.py
+    dest: scripts/integrations/jira/jira_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/jira/AGENTS.md
+
+python_dependencies:
+  - "requests>=2.31.0"
+
+env_vars:
+  - name: JIRA_BASE_URL
+    description: "Your Jira instance URL (e.g., https://your-org.atlassian.net)"
+    required: true
+  - name: JIRA_AUTH
+    description: "Pre-computed Base64(email:token) for Jira API authentication"
+    required: false
+    alternative: "Use JIRA_EMAIL + JIRA_API_TOKEN instead"
+  - name: JIRA_EMAIL
+    description: "Email address for Jira authentication"
+    required: false
+  - name: JIRA_API_TOKEN
+    description: "API token for Jira authentication"
+    required: false
+
+tags:
+  - jira
+  - project-management
+  - ticketing
+  - atlassian
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original

@@ -1,0 +1,41 @@
+name: Validate PR items
+
+on:
+  pull_request:
+    paths:
+      - 'items/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Find changed items
+        id: changed
+        run: |
+          ITEMS=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^items/' | cut -d'/' -f1-3 | sort -u)
+          echo "items<<EOF" >> $GITHUB_OUTPUT
+          echo "$ITEMS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Validate each changed item
+        run: |
+          FAILED=0
+          while IFS= read -r item_dir; do
+            [ -z "$item_dir" ] && continue
+            [ ! -d "$item_dir" ] && continue
+            echo "Validating: $item_dir"
+            python scripts/validate-item.py "$item_dir" || FAILED=1
+          done <<< "${{ steps.changed.outputs.items }}"
+          exit $FAILED
+
+      - name: Test full index build
+        run: python scripts/build-index.py

@@ -1,0 +1,31 @@
+id: organizational-context
+name: Organizational Context Template
+description: >
+  Template for documenting your organization's overview, key practices,
+  domain knowledge, and team structure for agent consumption.
+category: knowledge
+subcategory: templates
+
+files:
+  - src: organizational.md
+    dest: context/organizational.md
+
+python_dependencies: []
+env_vars: []
+
+tags:
+  - organization
+  - context
+  - onboarding
+  - team
+
+tech_tags: []
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: false
+
+source:
+  type: original

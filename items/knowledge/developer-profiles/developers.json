@@ -1,0 +1,9 @@
+{
+  "example_developer": {
+    "github_username": "example-user",
+    "name": "Example Developer",
+    "systems": ["system-a", "system-b"],
+    "expertise": ["python", "kubernetes"],
+    "notes": "Lead developer for the payments team"
+  }
+}
