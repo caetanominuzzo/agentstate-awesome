@@ -1,0 +1,49 @@
+name: Suggest a new item
+description: Suggest a new integration, skill, or tool for the collection
+title: "[New item] "
+labels: ["new-item"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - integrations
+        - skills
+        - modes
+        - orchestration
+        - knowledge
+        - meta
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: The service, tool, or skill name
+      placeholder: e.g. Stripe, PostgreSQL, systematic-debugging
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What should it do?
+      description: 1-3 sentences on what this item would give agents
+      placeholder: e.g. "CLI tool for managing Stripe subscriptions and payments. Agents could list customers, create invoices, and check payment status."
+    validations:
+      required: true
+  - type: input
+    id: api_docs
+    attributes:
+      label: API / docs link
+      description: Link to the service API docs or relevant reference
+      placeholder: https://docs.example.com/api
+  - type: dropdown
+    id: willing_to_build
+    attributes:
+      label: Are you willing to build it?
+      options:
+        - "Yes, I'll submit a PR"
+        - "No, just suggesting"
+    validations:
+      required: true
