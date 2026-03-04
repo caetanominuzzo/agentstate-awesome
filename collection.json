@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-03-03T21:39:24Z",
+  "generated": "2026-03-04T16:37:52Z",
   "repo": "caetanominuzzo/agentstate-awesome",
   "items": [
     {
@@ -2812,6 +2812,45 @@
       }
     },
     {
+      "id": "tokencost",
+      "name": "Token Cost",
+      "description": "CLI tool for fetching and querying LLM token pricing across all major vendors. Uses OpenRouter as the data source (300+ models). Agents can look up prices, calculate costs for a given token usage, and compare models by cost.\n",
+      "category": "integrations",
+      "subcategory": "pricing",
+      "files": [
+        {
+          "src": "tokencost_cli.py",
+          "dest": "scripts/integrations/tokencost/tokencost_cli.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"Token cost CLI — fetch and query LLM pricing from OpenRouter.\"\"\"\nimport argparse\nimport json\nimport sys\nimport urllib.request\n\nOPENROUTER_URL = \"https://openrouter.ai/api/v1/models\"\n\n\ndef fetch_models():\n    \"\"\"Fetch all models from OpenRouter.\"\"\"\n    req = urllib.request.Request(OPENROUTER_URL)\n    with urllib.request.urlopen(req, timeout=30) as resp:\n        return json.loads(resp.read())[\"data\"]\n\n\ndef normalize(model):\n    \"\"\"Normalize an OpenRouter model entry to a standard schema.\"\"\"\n    pricing = model.get(\"pricing\", {})\n    arch = model.get(\"architecture\", {})\n\n    def to_per_1m(val):\n        if val is None:\n            return None\n        try:\n            v = float(val)\n            return round(v * 1_000_000, 4) if v > 0 else 0.0\n        except (ValueError, TypeError):\n            return None\n\n    return {\n        \"id\": model.get(\"id\", \"\"),\n        \"name\": model.get(\"name\", \"\"),\n        \"vendor\": model.get(\"id\", \"\").split(\"/\")[0],\n        \"context_window\": model.get(\"context_length\"),\n        \"modalities\": {\n            \"input\": arch.get(\"input_modalities\", []),\n            \"output\": arch.get(\"output_modalities\", []),\n        },\n        \"price_per_1m_tokens\": {\n            \"input\": to_per_1m(pricing.get(\"prompt\")),\n            \"output\": to_per_1m(pricing.get(\"completion\")),\n            \"cached_input\": to_per_1m(pricing.get(\"input_cache_read\")),\n            \"image\": to_per_1m(pricing.get(\"image\")),\n            \"audio\": to_per_1m(pricing.get(\"audio\")),\n            \"web_search\": to_per_1m(pricing.get(\"web_search\")),\n        },\n    }\n\n\ndef cmd_list(args):\n    \"\"\"List all models with pricing.\"\"\"\n    models = fetch_models()\n    normalized = [normalize(m) for m in models]\n\n    if args.vendor:\n        v = args.vendor.lower()\n        normalized = [m for m in normalized if m[\"vendor\"].lower() == v]\n\n    if args.sort_by == \"input\":\n        normalized.sort(key=lambda m: m[\"price_per_1m_tokens\"][\"input\"] or float(\"inf\"))\n    elif args.sort_by == \"output\":\n        normalized.sort(key=lambda m: m[\"price_per_1m_tokens\"][\"output\"] or float(\"inf\"))\n\n    print(json.dumps(normalized, indent=2))\n\n\ndef cmd_get(args):\n    \"\"\"Get pricing for a specific model.\"\"\"\n    models = fetch_models()\n    query = args.model.lower()\n    for m in models:\n        if m.get(\"id\", \"\").lower() == query:\n            print(json.dumps(normalize(m), indent=2))\n            return\n    # fuzzy match\n    matches = [m for m in models if query in m.get(\"id\", \"\").lower()]\n    if matches:\n        print(json.dumps([normalize(m) for m in matches], indent=2))\n    else:\n        print(json.dumps({\"error\": f\"No model matching '{args.model}'\"}))\n        sys.exit(1)\n\n\ndef cmd_cost(args):\n    \"\"\"Calculate cost for a given token usage.\"\"\"\n    models = fetch_models()\n    query = args.model.lower()\n    target = None\n    for m in models:\n        if m.get(\"id\", \"\").lower() == query:\n            target = m\n            break\n    if not target:\n        matches = [m for m in models if query in m.get(\"id\", \"\").lower()]\n        if matches:\n            target = matches[0]\n    if not target:\n        print(json.dumps({\"error\": f\"No model matching '{args.model}'\"}))\n        sys.exit(1)\n\n    n = normalize(target)\n    p = n[\"price_per_1m_tokens\"]\n    input_cost = (args.input_tokens / 1_000_000) * (p[\"input\"] or 0)\n    output_cost = (args.output_tokens / 1_000_000) * (p[\"output\"] or 0)\n\n    print(json.dumps({\n        \"model\": n[\"id\"],\n        \"input_tokens\": args.input_tokens,\n        \"output_tokens\": args.output_tokens,\n        \"input_cost_usd\": round(input_cost, 6),\n        \"output_cost_usd\": round(output_cost, 6),\n        \"total_cost_usd\": round(input_cost + output_cost, 6),\n        \"prices_used\": p,\n    }, indent=2))\n\n\ndef cmd_compare(args):\n    \"\"\"Compare cost across models for a given workload.\"\"\"\n    models = fetch_models()\n    normalized = [normalize(m) for m in models]\n\n    # filter to models that have pricing\n    normalized = [m for m in normalized if m[\"price_per_1m_tokens\"][\"input\"] is not None]\n\n    if args.vendor:\n        vendors = [v.strip().lower() for v in args.vendor.split(\",\")]\n        normalized = [m for m in normalized if m[\"vendor\"].lower() in vendors]\n\n    results = []\n    for m in normalized:\n        p = m[\"price_per_1m_tokens\"]\n        input_cost = (args.input_tokens / 1_000_000) * (p[\"input\"] or 0)\n        output_cost = (args.output_tokens / 1_000_000) * (p[\"output\"] or 0)\n        total = round(input_cost + output_cost, 6)\n        results.append({\n            \"model\": m[\"id\"],\n            \"total_cost_usd\": total,\n            \"context_window\": m[\"context_window\"],\n        })\n\n    results.sort(key=lambda r: r[\"total_cost_usd\"])\n\n    if args.top:\n        results = results[:args.top]\n\n    print(json.dumps({\n        \"workload\": {\n            \"input_tokens\": args.input_tokens,\n            \"output_tokens\": args.output_tokens,\n        },\n        \"results\": results,\n    }, indent=2))\n\n\ndef cmd_dump(args):\n    \"\"\"Dump full normalized pricing as a static JSON file.\"\"\"\n    models = fetch_models()\n    normalized = [normalize(m) for m in models]\n    output = {\n        \"schema_version\": 1,\n        \"source\": \"openrouter.ai\",\n        \"unit\": \"USD_per_1M_tokens\",\n        \"model_count\": len(normalized),\n        \"models\": normalized,\n    }\n    print(json.dumps(output, indent=2))\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"Token cost — LLM pricing CLI\")\n    sub = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    # list\n    list_p = sub.add_parser(\"list\", help=\"List all models with pricing\")\n    list_p.add_argument(\"--vendor\", help=\"Filter by vendor (e.g. openai, anthropic)\")\n    list_p.add_argument(\"--sort-by\", choices=[\"input\", \"output\"], default=\"input\", help=\"Sort by price\")\n\n    # get\n    get_p = sub.add_parser(\"get\", help=\"Get pricing for a specific model\")\n    get_p.add_argument(\"model\", help=\"Model ID (e.g. anthropic/claude-sonnet-4)\")\n\n    # cost\n    cost_p = sub.add_parser(\"cost\", help=\"Calculate cost for token usage\")\n    cost_p.add_argument(\"model\", help=\"Model ID\")\n    cost_p.add_argument(\"--input-tokens\", type=int, required=True, help=\"Number of input tokens\")\n    cost_p.add_argument(\"--output-tokens\", type=int, required=True, help=\"Number of output tokens\")\n\n    # compare\n    cmp_p = sub.add_parser(\"compare\", help=\"Compare cost across models for a workload\")\n    cmp_p.add_argument(\"--input-tokens\", type=int, required=True, help=\"Number of input tokens\")\n    cmp_p.add_argument(\"--output-tokens\", type=int, required=True, help=\"Number of output tokens\")\n    cmp_p.add_argument(\"--vendor\", help=\"Filter vendors (comma-separated)\")\n    cmp_p.add_argument(\"--top\", type=int, help=\"Show only top N cheapest\")\n\n    # dump\n    sub.add_parser(\"dump\", help=\"Dump full normalized pricing JSON\")\n\n    args = parser.parse_args()\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    {\"list\": cmd_list, \"get\": cmd_get, \"cost\": cmd_cost, \"compare\": cmd_compare, \"dump\": cmd_dump}[args.command](args)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/tokencost/AGENTS.md",
+          "content": "# Token Cost — LLM Pricing CLI\n\nQuery LLM token pricing from OpenRouter (300+ models, all major vendors). No API key needed.\n\n## Commands\n\n```bash\n# Get pricing for a specific model\npython tokencost_cli.py get anthropic/claude-sonnet-4\n\n# Calculate cost for a workload\npython tokencost_cli.py cost anthropic/claude-sonnet-4 --input-tokens 10000 --output-tokens 2000\n\n# Compare cheapest models for a workload\npython tokencost_cli.py compare --input-tokens 10000 --output-tokens 2000 --top 10\n\n# Compare only specific vendors\npython tokencost_cli.py compare --input-tokens 10000 --output-tokens 2000 --vendor openai,anthropic,google\n\n# List all models from a vendor, sorted by input price\npython tokencost_cli.py list --vendor anthropic --sort-by input\n\n# Dump full normalized pricing JSON (all models)\npython tokencost_cli.py dump\n```\n\n## Output format\n\nAll output is JSON. Prices are normalized to **USD per 1M tokens**.\n\n## Data source\n\nOpenRouter API (`https://openrouter.ai/api/v1/models`) — no auth required, updated continuously.\n"
+        }
+      ],
+      "python_dependencies": [],
+      "env_vars": [],
+      "tags": [
+        "pricing",
+        "tokens",
+        "cost",
+        "llm",
+        "openrouter"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": true,
+      "source": {
+        "type": "original"
+      }
+    },
+    {
       "id": "trello-integration",
       "name": "Trello Integration",
       "description": "CLI tool for managing Trello boards, lists, and cards. Gives agents direct access to your Trello workspace via the REST API.\n",
@@ -4526,48 +4565,6 @@
         "repo": "obra/superpowers",
         "path": "skills/writing-plans/SKILL.md",
         "last_synced": "2026-03-03"
-      }
-    },
-    {
-      "id": "sso-cli-integration",
-      "name": "SSO CLI (Keycloak/OIDC)",
-      "description": "CLI tool to fetch Keycloak/OIDC bearer tokens on demand. Stores credentials securely in the system keyring — no .env files or secrets in prompts. Agents call $(sso env user) inline to authenticate against any SSO-protected API. Supports multiple environments and users with prefix matching.",
-      "category": "integrations",
-      "subcategory": "authentication",
-      "files": [
-        {
-          "src": "sso_helper.py",
-          "dest": "scripts/integrations/sso-cli/sso_helper.py",
-          "content": "#!/usr/bin/env python3\n\"\"\"SSO CLI helper — install, configure, and fetch OIDC tokens.\n\nWraps the sso-cli package (https://pypi.org/project/sso-cli/) to give\nagents a programmatic interface for Keycloak/OIDC token retrieval.\n\"\"\"\nimport argparse\nimport json\nimport shutil\nimport subprocess\nimport sys\n\n\ndef ensure_installed():\n    \"\"\"Install sso-cli if not already available.\"\"\"\n    if shutil.which(\"sso\"):\n        return True\n    print(\"sso-cli not found. Installing...\", file=sys.stderr)\n    try:\n        subprocess.check_call(\n            [sys.executable, \"-m\", \"pip\", \"install\", \"--quiet\", \"sso-cli\"],\n            stdout=subprocess.DEVNULL,\n        )\n        # Ensure PATH is configured\n        subprocess.run(\n            [\"sso-setup-path\"],\n            stdout=subprocess.DEVNULL,\n            stderr=subprocess.DEVNULL,\n        )\n        return True\n    except subprocess.CalledProcessError as e:\n        print(json.dumps({\"error\": f\"Failed to install sso-cli: {e}\"}), file=sys.stderr)\n        return False\n\n\ndef get_token(env, user):\n    \"\"\"Fetch a bearer token for the given environment and user.\"\"\"\n    try:\n        result = subprocess.run(\n            [\"sso\", env, user],\n            capture_output=True,\n            text=True,\n            timeout=30,\n        )\n        if result.returncode != 0:\n            return {\"error\": result.stderr.strip() or \"Failed to fetch token\"}\n        token = result.stdout.strip()\n        if not token:\n            return {\"error\": \"Empty token returned. Run 'sso' interactively to configure credentials.\"}\n        return {\"token\": token}\n    except FileNotFoundError:\n        return {\"error\": \"sso command not found. Run: pip install sso-cli && sso-setup-path\"}\n    except subprocess.TimeoutExpired:\n        return {\"error\": \"Token fetch timed out after 30s\"}\n\n\ndef list_envs():\n    \"\"\"List configured environments.\"\"\"\n    try:\n        result = subprocess.run(\n            [\"sso\", \"-l\", \"env\"],\n            capture_output=True,\n            text=True,\n            timeout=10,\n        )\n        return {\"environments\": result.stdout.strip().splitlines()}\n    except (FileNotFoundError, subprocess.TimeoutExpired) as e:\n        return {\"error\": str(e)}\n\n\ndef list_users(env=None):\n    \"\"\"List configured users, optionally filtered by environment.\"\"\"\n    try:\n        cmd = [\"sso\", \"-l\", \"user\"]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=10,\n        )\n        return {\"users\": result.stdout.strip().splitlines()}\n    except (FileNotFoundError, subprocess.TimeoutExpired) as e:\n        return {\"error\": str(e)}\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"SSO CLI Helper\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    subparsers.add_parser(\"install\", help=\"Install sso-cli if not present\")\n\n    token_parser = subparsers.add_parser(\"token\", help=\"Fetch a bearer token\")\n    token_parser.add_argument(\"env\", help=\"Environment name or prefix (e.g., prod, dev)\")\n    token_parser.add_argument(\"user\", help=\"User email or client name or prefix\")\n\n    subparsers.add_parser(\"list-envs\", help=\"List configured environments\")\n    subparsers.add_parser(\"list-users\", help=\"List configured users\")\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    if args.command == \"install\":\n        ok = ensure_installed()\n        result = {\"installed\": ok}\n    elif args.command == \"token\":\n        if not ensure_installed():\n            sys.exit(1)\n        result = get_token(args.env, args.user)\n    elif args.command == \"list-envs\":\n        result = list_envs()\n    elif args.command == \"list-users\":\n        result = list_users()\n\n    print(json.dumps(result, indent=2))\n    sys.exit(1 if \"error\" in result else 0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
-        },
-        {
-          "src": "AGENTS.md",
-          "dest": "scripts/integrations/sso-cli/AGENTS.md",
-          "content": "# SSO CLI (Keycloak/OIDC)\n\nFetch bearer tokens for SSO-protected APIs without exposing credentials.\nCredentials are stored in the system keyring — no `.env` files needed.\n\n## Install\n\n```bash\n# Auto-install via helper\npython scripts/integrations/sso-cli/sso_helper.py install\n\n# Or manually\npip install sso-cli\nsso-setup-path\n```\n\n## Quick Usage\n\nThe fastest way to use sso-cli is inline with shell substitution:\n\n```bash\n# Fetch a token and use it directly\ncurl https://api.example.com/orders \\\n  -H \"Authorization: Bearer $(sso prod user@example.com)\"\n\n# Prefix matching works — shorter is fine if unambiguous\ncurl https://api.dev.example.com/health \\\n  -H \"Authorization: Bearer $(sso d u)\"\n```\n\n## Helper Script\n\n```bash\n# Fetch a token (JSON output)\npython scripts/integrations/sso-cli/sso_helper.py token prod user@example.com\n\n# List configured environments\npython scripts/integrations/sso-cli/sso_helper.py list-envs\n\n# List configured users\npython scripts/integrations/sso-cli/sso_helper.py list-users\n```\n\n## First-Time Setup\n\nRun `sso` interactively (no arguments) to configure an environment and user.\nThe tool will prompt for SSO URL, realm, email/client, and password/secret.\nCredentials are stored in the OS keyring and never written to disk.\n\n## No Environment Variables Required\n\nUnlike most integrations, sso-cli does not use `.env` files.\nAll secrets live in the system keyring. Configuration is in `~/sso_config.yaml`.\n"
-        }
-      ],
-      "python_dependencies": [
-        "sso-cli>=1.0.0"
-      ],
-      "env_vars": [],
-      "tags": [
-        "sso",
-        "keycloak",
-        "oidc",
-        "authentication",
-        "bearer-token",
-        "keyring"
-      ],
-      "tech_tags": [
-        "python"
-      ],
-      "compatible_agents": [
-        "any"
-      ],
-      "depends_on": [],
-      "featured": false,
-      "source": {
-        "type": "original"
       }
     }
   ],
