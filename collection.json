@@ -4527,6 +4527,48 @@
         "path": "skills/writing-plans/SKILL.md",
         "last_synced": "2026-03-03"
       }
+    },
+    {
+      "id": "sso-cli-integration",
+      "name": "SSO CLI (Keycloak/OIDC)",
+      "description": "CLI tool to fetch Keycloak/OIDC bearer tokens on demand. Stores credentials securely in the system keyring — no .env files or secrets in prompts. Agents call $(sso env user) inline to authenticate against any SSO-protected API. Supports multiple environments and users with prefix matching.",
+      "category": "integrations",
+      "subcategory": "authentication",
+      "files": [
+        {
+          "src": "sso_helper.py",
+          "dest": "scripts/integrations/sso-cli/sso_helper.py",
+          "content": "#!/usr/bin/env python3\n\"\"\"SSO CLI helper — install, configure, and fetch OIDC tokens.\n\nWraps the sso-cli package (https://pypi.org/project/sso-cli/) to give\nagents a programmatic interface for Keycloak/OIDC token retrieval.\n\"\"\"\nimport argparse\nimport json\nimport shutil\nimport subprocess\nimport sys\n\n\ndef ensure_installed():\n    \"\"\"Install sso-cli if not already available.\"\"\"\n    if shutil.which(\"sso\"):\n        return True\n    print(\"sso-cli not found. Installing...\", file=sys.stderr)\n    try:\n        subprocess.check_call(\n            [sys.executable, \"-m\", \"pip\", \"install\", \"--quiet\", \"sso-cli\"],\n            stdout=subprocess.DEVNULL,\n        )\n        # Ensure PATH is configured\n        subprocess.run(\n            [\"sso-setup-path\"],\n            stdout=subprocess.DEVNULL,\n            stderr=subprocess.DEVNULL,\n        )\n        return True\n    except subprocess.CalledProcessError as e:\n        print(json.dumps({\"error\": f\"Failed to install sso-cli: {e}\"}), file=sys.stderr)\n        return False\n\n\ndef get_token(env, user):\n    \"\"\"Fetch a bearer token for the given environment and user.\"\"\"\n    try:\n        result = subprocess.run(\n            [\"sso\", env, user],\n            capture_output=True,\n            text=True,\n            timeout=30,\n        )\n        if result.returncode != 0:\n            return {\"error\": result.stderr.strip() or \"Failed to fetch token\"}\n        token = result.stdout.strip()\n        if not token:\n            return {\"error\": \"Empty token returned. Run 'sso' interactively to configure credentials.\"}\n        return {\"token\": token}\n    except FileNotFoundError:\n        return {\"error\": \"sso command not found. Run: pip install sso-cli && sso-setup-path\"}\n    except subprocess.TimeoutExpired:\n        return {\"error\": \"Token fetch timed out after 30s\"}\n\n\ndef list_envs():\n    \"\"\"List configured environments.\"\"\"\n    try:\n        result = subprocess.run(\n            [\"sso\", \"-l\", \"env\"],\n            capture_output=True,\n            text=True,\n            timeout=10,\n        )\n        return {\"environments\": result.stdout.strip().splitlines()}\n    except (FileNotFoundError, subprocess.TimeoutExpired) as e:\n        return {\"error\": str(e)}\n\n\ndef list_users(env=None):\n    \"\"\"List configured users, optionally filtered by environment.\"\"\"\n    try:\n        cmd = [\"sso\", \"-l\", \"user\"]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=10,\n        )\n        return {\"users\": result.stdout.strip().splitlines()}\n    except (FileNotFoundError, subprocess.TimeoutExpired) as e:\n        return {\"error\": str(e)}\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"SSO CLI Helper\")\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    subparsers.add_parser(\"install\", help=\"Install sso-cli if not present\")\n\n    token_parser = subparsers.add_parser(\"token\", help=\"Fetch a bearer token\")\n    token_parser.add_argument(\"env\", help=\"Environment name or prefix (e.g., prod, dev)\")\n    token_parser.add_argument(\"user\", help=\"User email or client name or prefix\")\n\n    subparsers.add_parser(\"list-envs\", help=\"List configured environments\")\n    subparsers.add_parser(\"list-users\", help=\"List configured users\")\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        sys.exit(1)\n\n    if args.command == \"install\":\n        ok = ensure_installed()\n        result = {\"installed\": ok}\n    elif args.command == \"token\":\n        if not ensure_installed():\n            sys.exit(1)\n        result = get_token(args.env, args.user)\n    elif args.command == \"list-envs\":\n        result = list_envs()\n    elif args.command == \"list-users\":\n        result = list_users()\n\n    print(json.dumps(result, indent=2))\n    sys.exit(1 if \"error\" in result else 0)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "src": "AGENTS.md",
+          "dest": "scripts/integrations/sso-cli/AGENTS.md",
+          "content": "# SSO CLI (Keycloak/OIDC)\n\nFetch bearer tokens for SSO-protected APIs without exposing credentials.\nCredentials are stored in the system keyring — no `.env` files needed.\n\n## Install\n\n```bash\n# Auto-install via helper\npython scripts/integrations/sso-cli/sso_helper.py install\n\n# Or manually\npip install sso-cli\nsso-setup-path\n```\n\n## Quick Usage\n\nThe fastest way to use sso-cli is inline with shell substitution:\n\n```bash\n# Fetch a token and use it directly\ncurl https://api.example.com/orders \\\n  -H \"Authorization: Bearer $(sso prod user@example.com)\"\n\n# Prefix matching works — shorter is fine if unambiguous\ncurl https://api.dev.example.com/health \\\n  -H \"Authorization: Bearer $(sso d u)\"\n```\n\n## Helper Script\n\n```bash\n# Fetch a token (JSON output)\npython scripts/integrations/sso-cli/sso_helper.py token prod user@example.com\n\n# List configured environments\npython scripts/integrations/sso-cli/sso_helper.py list-envs\n\n# List configured users\npython scripts/integrations/sso-cli/sso_helper.py list-users\n```\n\n## First-Time Setup\n\nRun `sso` interactively (no arguments) to configure an environment and user.\nThe tool will prompt for SSO URL, realm, email/client, and password/secret.\nCredentials are stored in the OS keyring and never written to disk.\n\n## No Environment Variables Required\n\nUnlike most integrations, sso-cli does not use `.env` files.\nAll secrets live in the system keyring. Configuration is in `~/sso_config.yaml`.\n"
+        }
+      ],
+      "python_dependencies": [
+        "sso-cli>=1.0.0"
+      ],
+      "env_vars": [],
+      "tags": [
+        "sso",
+        "keycloak",
+        "oidc",
+        "authentication",
+        "bearer-token",
+        "keyring"
+      ],
+      "tech_tags": [
+        "python"
+      ],
+      "compatible_agents": [
+        "any"
+      ],
+      "depends_on": [],
+      "featured": false,
+      "source": {
+        "type": "original"
+      }
     }
   ],
   "categories": [
