@@ -1,0 +1,37 @@
+id: tokencost
+name: Token Cost
+description: >
+  CLI tool for fetching and querying LLM token pricing across all major vendors.
+  Uses OpenRouter as the data source (300+ models). Agents can look up prices,
+  calculate costs for a given token usage, and compare models by cost.
+category: integrations
+subcategory: pricing
+
+files:
+  - src: tokencost_cli.py
+    dest: scripts/integrations/tokencost/tokencost_cli.py
+  - src: AGENTS.md
+    dest: scripts/integrations/tokencost/AGENTS.md
+
+python_dependencies: []
+
+env_vars: []
+
+tags:
+  - pricing
+  - tokens
+  - cost
+  - llm
+  - openrouter
+
+tech_tags:
+  - python
+
+compatible_agents:
+  - any
+
+depends_on: []
+featured: true
+
+source:
+  type: original
