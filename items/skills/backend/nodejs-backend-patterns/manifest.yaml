@@ -1,32 +1,25 @@
 id: nodejs-backend-patterns
 name: Node.js Backend Patterns
-description: "Node.js backend patterns"
+description: Node.js backend patterns
 category: skills
 subcategory: backend
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/nodejs-backend-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/nodejs-backend-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - nodejs
-  - backend
-  - patterns
-
+- nodejs
+- backend
+- patterns
 tech_tags:
-  - javascript
-
+- javascript
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/javascript-typescript/skills/nodejs-backend-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/javascript-typescript/skills/nodejs-backend-patterns/SKILL.md
+  last_synced: '2026-03-09'

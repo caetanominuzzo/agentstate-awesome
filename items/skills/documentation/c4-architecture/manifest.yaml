@@ -1,31 +1,24 @@
 id: c4-architecture
 name: C4 Architecture
-description: "C4 architecture diagrams"
+description: C4 architecture diagrams
 category: skills
 subcategory: documentation
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/c4-architecture.md
-
+- src: SKILL.md
+  dest: skills/curated/c4-architecture.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - c4
-  - architecture
-  - documentation
-
+- c4
+- architecture
+- documentation
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "softaworks/agent-toolkit"
-  path: "skills/c4-architecture/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: softaworks/agent-toolkit
+  path: skills/c4-architecture/SKILL.md
+  last_synced: '2026-03-09'

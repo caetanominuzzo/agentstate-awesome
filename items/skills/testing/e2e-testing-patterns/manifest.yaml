@@ -1,32 +1,25 @@
 id: e2e-testing-patterns
 name: E2E Testing Patterns
-description: "End-to-end testing"
+description: End-to-end testing
 category: skills
 subcategory: testing
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/e2e-testing-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/e2e-testing-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - e2e
-  - testing
-  - patterns
-  - testing
-
+- e2e
+- testing
+- patterns
+- testing
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md
+  last_synced: '2026-03-09'

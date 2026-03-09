@@ -1,32 +1,25 @@
 id: typescript-advanced-types
 name: TypeScript Advanced Types
-description: "TypeScript patterns"
+description: TypeScript patterns
 category: skills
 subcategory: typescript
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/typescript-advanced-types.md
-
+- src: SKILL.md
+  dest: skills/curated/typescript-advanced-types.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - typescript
-  - advanced
-  - types
-
+- typescript
+- advanced
+- types
 tech_tags:
-  - typescript
-
+- typescript
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/javascript-typescript/skills/typescript-advanced-types/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/javascript-typescript/skills/typescript-advanced-types/SKILL.md
+  last_synced: '2026-03-09'

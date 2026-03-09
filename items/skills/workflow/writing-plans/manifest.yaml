@@ -1,31 +1,24 @@
 id: writing-plans
 name: Writing Plans
-description: "Detailed implementation plans"
+description: Detailed implementation plans
 category: skills
 subcategory: workflow
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/writing-plans.md
-
+- src: SKILL.md
+  dest: skills/curated/writing-plans.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - writing
-  - plans
-  - workflow
-
+- writing
+- plans
+- workflow
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "obra/superpowers"
-  path: "skills/writing-plans/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: obra/superpowers
+  path: skills/writing-plans/SKILL.md
+  last_synced: '2026-03-09'
