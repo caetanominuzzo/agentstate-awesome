@@ -1,32 +1,25 @@
 id: python-testing-patterns
 name: Python Testing Patterns
-description: "pytest, fixtures, mocking"
+description: pytest, fixtures, mocking
 category: skills
 subcategory: python
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/python-testing-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/python-testing-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - python
-  - testing
-  - patterns
-
+- python
+- testing
+- patterns
 tech_tags:
-  - python
-
+- python
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/python-development/skills/python-testing-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/python-development/skills/python-testing-patterns/SKILL.md
+  last_synced: '2026-03-16'

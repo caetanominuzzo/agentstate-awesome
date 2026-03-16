@@ -1,33 +1,26 @@
 id: sql-optimization-patterns
 name: SQL Optimization Patterns
-description: "Query optimization"
+description: Query optimization
 category: skills
 subcategory: database
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/sql-optimization-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/sql-optimization-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - sql
-  - optimization
-  - patterns
-  - database
-
+- sql
+- optimization
+- patterns
+- database
 tech_tags:
-  - sql
-
+- sql
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md
+  last_synced: '2026-03-16'

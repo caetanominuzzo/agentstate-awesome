@@ -1,30 +1,23 @@
 id: webapp-testing
 name: Webapp Testing
-description: "Web application testing"
+description: Web application testing
 category: skills
 subcategory: testing
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/webapp-testing.md
-
+- src: SKILL.md
+  dest: skills/curated/webapp-testing.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - webapp
-  - testing
-
+- webapp
+- testing
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "anthropics/skills"
-  path: "skills/webapp-testing/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: anthropics/skills
+  path: skills/webapp-testing/SKILL.md
+  last_synced: '2026-03-16'

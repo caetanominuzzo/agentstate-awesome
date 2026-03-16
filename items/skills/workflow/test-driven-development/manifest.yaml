@@ -1,32 +1,25 @@
 id: test-driven-development
 name: Test-Driven Development
-description: "RED-GREEN-REFACTOR cycle"
+description: RED-GREEN-REFACTOR cycle
 category: skills
 subcategory: workflow
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/test-driven-development.md
-
+- src: SKILL.md
+  dest: skills/curated/test-driven-development.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - test
-  - driven
-  - development
-  - workflow
-
+- test
+- driven
+- development
+- workflow
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "obra/superpowers"
-  path: "skills/test-driven-development/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: obra/superpowers
+  path: skills/test-driven-development/SKILL.md
+  last_synced: '2026-03-16'

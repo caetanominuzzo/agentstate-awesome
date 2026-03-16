@@ -1,32 +1,25 @@
 id: modern-javascript-patterns
 name: Modern JavaScript Patterns
-description: "ES6+ patterns"
+description: ES6+ patterns
 category: skills
 subcategory: javascript
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/modern-javascript-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/modern-javascript-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - modern
-  - javascript
-  - patterns
-
+- modern
+- javascript
+- patterns
 tech_tags:
-  - javascript
-
+- javascript
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/javascript-typescript/skills/modern-javascript-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/javascript-typescript/skills/modern-javascript-patterns/SKILL.md
+  last_synced: '2026-03-16'

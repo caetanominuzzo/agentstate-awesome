@@ -1,32 +1,25 @@
 id: receiving-code-review
 name: Receiving Code Review
-description: "Responding to feedback"
+description: Responding to feedback
 category: skills
 subcategory: workflow
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/receiving-code-review.md
-
+- src: SKILL.md
+  dest: skills/curated/receiving-code-review.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - receiving
-  - code
-  - review
-  - workflow
-
+- receiving
+- code
+- review
+- workflow
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "obra/superpowers"
-  path: "skills/receiving-code-review/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: obra/superpowers
+  path: skills/receiving-code-review/SKILL.md
+  last_synced: '2026-03-16'

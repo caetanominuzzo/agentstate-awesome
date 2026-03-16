@@ -1,31 +1,24 @@
 id: executing-plans
 name: Executing Plans
-description: "Batch execution with checkpoints"
+description: Batch execution with checkpoints
 category: skills
 subcategory: workflow
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/executing-plans.md
-
+- src: SKILL.md
+  dest: skills/curated/executing-plans.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - executing
-  - plans
-  - workflow
-
+- executing
+- plans
+- workflow
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "obra/superpowers"
-  path: "skills/executing-plans/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: obra/superpowers
+  path: skills/executing-plans/SKILL.md
+  last_synced: '2026-03-16'

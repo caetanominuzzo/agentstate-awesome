@@ -1,31 +1,24 @@
 id: frontend-design
 name: Frontend Design
-description: "UI best practices"
+description: UI best practices
 category: skills
 subcategory: frontend
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/frontend-design.md
-
+- src: SKILL.md
+  dest: skills/curated/frontend-design.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - frontend
-  - design
-
+- frontend
+- design
 tech_tags:
-  - javascript
-
+- javascript
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "anthropics/skills"
-  path: "skills/frontend-design/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: anthropics/skills
+  path: skills/frontend-design/SKILL.md
+  last_synced: '2026-03-16'
