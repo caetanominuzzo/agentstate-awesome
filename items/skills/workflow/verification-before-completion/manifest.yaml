@@ -1,32 +1,25 @@
 id: verification-before-completion
 name: Verification Before Completion
-description: "Verify fixes before declaring done"
+description: Verify fixes before declaring done
 category: skills
 subcategory: workflow
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/verification-before-completion.md
-
+- src: SKILL.md
+  dest: skills/curated/verification-before-completion.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - verification
-  - before
-  - completion
-  - workflow
-
+- verification
+- before
+- completion
+- workflow
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "obra/superpowers"
-  path: "skills/verification-before-completion/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: obra/superpowers
+  path: skills/verification-before-completion/SKILL.md
+  last_synced: '2026-03-23'

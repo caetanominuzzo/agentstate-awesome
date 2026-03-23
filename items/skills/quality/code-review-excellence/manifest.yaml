@@ -1,32 +1,25 @@
 id: code-review-excellence
 name: Code Review Excellence
-description: "PR review guidelines"
+description: PR review guidelines
 category: skills
 subcategory: quality
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/code-review-excellence.md
-
+- src: SKILL.md
+  dest: skills/curated/code-review-excellence.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - code
-  - review
-  - excellence
-  - quality
-
+- code
+- review
+- excellence
+- quality
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/developer-essentials/skills/code-review-excellence/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/developer-essentials/skills/code-review-excellence/SKILL.md
+  last_synced: '2026-03-23'

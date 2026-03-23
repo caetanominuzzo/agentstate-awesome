@@ -1,31 +1,24 @@
 id: debugging-strategies
 name: Debugging Strategies
-description: "General debugging approaches"
+description: General debugging approaches
 category: skills
 subcategory: quality
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/debugging-strategies.md
-
+- src: SKILL.md
+  dest: skills/curated/debugging-strategies.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - debugging
-  - strategies
-  - quality
-
+- debugging
+- strategies
+- quality
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/developer-essentials/skills/debugging-strategies/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/developer-essentials/skills/debugging-strategies/SKILL.md
+  last_synced: '2026-03-23'

@@ -1,33 +1,26 @@
 id: postgresql-table-design
 name: PostgreSQL Table Design
-description: "PostgreSQL design patterns"
+description: PostgreSQL design patterns
 category: skills
 subcategory: database
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/postgresql-table-design.md
-
+- src: SKILL.md
+  dest: skills/curated/postgresql-table-design.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - postgresql
-  - table
-  - design
-  - database
-
+- postgresql
+- table
+- design
+- database
 tech_tags:
-  - sql
-
+- sql
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/database-design/skills/postgresql/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/database-design/skills/postgresql/SKILL.md
+  last_synced: '2026-03-23'

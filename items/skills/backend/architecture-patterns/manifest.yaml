@@ -1,31 +1,24 @@
 id: architecture-patterns
 name: Architecture Patterns
-description: "Software architecture patterns"
+description: Software architecture patterns
 category: skills
 subcategory: backend
-
 files:
-  - src: SKILL.md
-    dest: skills/curated/architecture-patterns.md
-
+- src: SKILL.md
+  dest: skills/curated/architecture-patterns.md
 python_dependencies: []
 env_vars: []
-
 tags:
-  - architecture
-  - patterns
-  - backend
-
+- architecture
+- patterns
+- backend
 tech_tags: []
-
 compatible_agents:
-  - any
-
+- any
 depends_on: []
 featured: false
-
 source:
   type: mirror
-  repo: "wshobson/agents"
-  path: "plugins/backend-development/skills/architecture-patterns/SKILL.md"
-  last_synced: "2026-03-03"
+  repo: wshobson/agents
+  path: plugins/backend-development/skills/architecture-patterns/SKILL.md
+  last_synced: '2026-03-23'
