@@ -1,0 +1,83 @@
+{
+  "api-design-principles": {
+    "installs": "12.7K"
+  },
+  "architecture-patterns": {
+    "installs": "9.7K"
+  },
+  "error-handling-patterns": {
+    "installs": "6.6K"
+  },
+  "nodejs-backend-patterns": {
+    "installs": "12.4K"
+  },
+  "postgresql-table-design": {
+    "installs": "9.4K"
+  },
+  "sql-optimization-patterns": {
+    "installs": "7.4K"
+  },
+  "github-actions-templates": {
+    "installs": "5.9K"
+  },
+  "modern-javascript-patterns": {
+    "installs": "6.5K"
+  },
+  "async-python-patterns": {
+    "installs": "6.2K"
+  },
+  "python-performance-optimization": {
+    "installs": "12.6K"
+  },
+  "python-testing-patterns": {
+    "installs": "10.2K"
+  },
+  "code-review-excellence": {
+    "installs": "9.2K"
+  },
+  "debugging-strategies": {
+    "installs": "4.6K"
+  },
+  "e2e-testing-patterns": {
+    "installs": "8.7K"
+  },
+  "javascript-testing-patterns": {
+    "installs": "6.9K"
+  },
+  "typescript-advanced-types": {
+    "installs": "18.1K"
+  },
+  "mermaid-diagrams": {
+    "installs": "18.3K"
+  },
+  "frontend-design": {
+    "installs": "203.6K"
+  },
+  "webapp-testing": {
+    "installs": "33.5K"
+  },
+  "brainstorming": {
+    "installs": "74.4K"
+  },
+  "executing-plans": {
+    "installs": "32.4K"
+  },
+  "receiving-code-review": {
+    "installs": "26.0K"
+  },
+  "requesting-code-review": {
+    "installs": "32.5K"
+  },
+  "systematic-debugging": {
+    "installs": "40.9K"
+  },
+  "test-driven-development": {
+    "installs": "34.3K"
+  },
+  "verification-before-completion": {
+    "installs": "26.2K"
+  },
+  "writing-plans": {
+    "installs": "39.7K"
+  }
+}

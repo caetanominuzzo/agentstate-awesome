@@ -175,6 +175,13 @@ def build_collection(items_root):
             manifest.setdefault("featured", False)
             manifest.setdefault("source", {"type": "original"})
 
+            # Auto-generate skills.sh URL for mirrored items
+            source = manifest.get("source", {})
+            if source.get("type") == "mirror" and source.get("repo"):
+                manifest["skills_sh_url"] = (
+                    f"https://skills.sh/{source['repo']}/{manifest['id']}"
+                )
+
             items.append(manifest)
 
     # Build category metadata

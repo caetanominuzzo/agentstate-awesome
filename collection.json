@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-03-04T16:37:52Z",
+  "generated": "2026-03-26T14:29:38Z",
   "repo": "caetanominuzzo/agentstate-awesome",
   "items": [
     {
@@ -3612,7 +3612,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/backend-development/skills/api-design-principles/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/api-design-principles"
     },
     {
       "id": "architecture-patterns",
@@ -3645,7 +3646,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/backend-development/skills/architecture-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/architecture-patterns"
     },
     {
       "id": "error-handling-patterns",
@@ -3679,7 +3681,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/developer-essentials/skills/error-handling-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/error-handling-patterns"
     },
     {
       "id": "nodejs-backend-patterns",
@@ -3714,7 +3717,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/javascript-typescript/skills/nodejs-backend-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/nodejs-backend-patterns"
     },
     {
       "id": "database-schema-designer",
@@ -3749,7 +3753,8 @@
         "repo": "softaworks/agent-toolkit",
         "path": "skills/database-schema-designer/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/softaworks/agent-toolkit/database-schema-designer"
     },
     {
       "id": "postgresql-table-design",
@@ -3785,7 +3790,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/database-design/skills/postgresql/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/postgresql-table-design"
     },
     {
       "id": "sql-optimization-patterns",
@@ -3821,7 +3827,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/developer-essentials/skills/sql-optimization-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/sql-optimization-patterns"
     },
     {
       "id": "github-actions-templates",
@@ -3855,7 +3862,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/cicd-automation/skills/github-actions-templates/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/github-actions-templates"
     },
     {
       "id": "c4-architecture",
@@ -3888,7 +3896,8 @@
         "repo": "softaworks/agent-toolkit",
         "path": "skills/c4-architecture/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/softaworks/agent-toolkit/c4-architecture"
     },
     {
       "id": "mermaid-diagrams",
@@ -3921,7 +3930,8 @@
         "repo": "softaworks/agent-toolkit",
         "path": "skills/mermaid-diagrams/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/softaworks/agent-toolkit/mermaid-diagrams"
     },
     {
       "id": "frontend-design",
@@ -3955,7 +3965,8 @@
         "repo": "anthropics/skills",
         "path": "skills/frontend-design/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/anthropics/skills/frontend-design"
     },
     {
       "id": "modern-javascript-patterns",
@@ -3990,7 +4001,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/javascript-typescript/skills/modern-javascript-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/modern-javascript-patterns"
     },
     {
       "id": "async-python-patterns",
@@ -4025,7 +4037,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/python-development/skills/async-python-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/async-python-patterns"
     },
     {
       "id": "python-performance-optimization",
@@ -4060,7 +4073,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/python-development/skills/python-performance-optimization/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/python-performance-optimization"
     },
     {
       "id": "python-testing-patterns",
@@ -4095,7 +4109,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/python-development/skills/python-testing-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/python-testing-patterns"
     },
     {
       "id": "code-review-excellence",
@@ -4129,7 +4144,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/developer-essentials/skills/code-review-excellence/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/code-review-excellence"
     },
     {
       "id": "debugging-strategies",
@@ -4162,7 +4178,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/developer-essentials/skills/debugging-strategies/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/debugging-strategies"
     },
     {
       "id": "e2e-testing-patterns",
@@ -4196,7 +4213,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/e2e-testing-patterns"
     },
     {
       "id": "javascript-testing-patterns",
@@ -4231,7 +4249,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/javascript-typescript/skills/javascript-testing-patterns/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/javascript-testing-patterns"
     },
     {
       "id": "webapp-testing",
@@ -4263,7 +4282,8 @@
         "repo": "anthropics/skills",
         "path": "skills/webapp-testing/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/anthropics/skills/webapp-testing"
     },
     {
       "id": "typescript-advanced-types",
@@ -4298,7 +4318,8 @@
         "repo": "wshobson/agents",
         "path": "plugins/javascript-typescript/skills/typescript-advanced-types/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/wshobson/agents/typescript-advanced-types"
     },
     {
       "id": "brainstorming",
@@ -4330,7 +4351,8 @@
         "repo": "obra/superpowers",
         "path": "skills/brainstorming/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/brainstorming"
     },
     {
       "id": "executing-plans",
@@ -4363,7 +4385,8 @@
         "repo": "obra/superpowers",
         "path": "skills/executing-plans/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/executing-plans"
     },
     {
       "id": "receiving-code-review",
@@ -4397,7 +4420,8 @@
         "repo": "obra/superpowers",
         "path": "skills/receiving-code-review/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/receiving-code-review"
     },
     {
       "id": "requesting-code-review",
@@ -4431,7 +4455,8 @@
         "repo": "obra/superpowers",
         "path": "skills/requesting-code-review/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/requesting-code-review"
     },
     {
       "id": "systematic-debugging",
@@ -4464,7 +4489,8 @@
         "repo": "obra/superpowers",
         "path": "skills/systematic-debugging/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/systematic-debugging"
     },
     {
       "id": "test-driven-development",
@@ -4498,7 +4524,8 @@
         "repo": "obra/superpowers",
         "path": "skills/test-driven-development/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/test-driven-development"
     },
     {
       "id": "verification-before-completion",
@@ -4532,7 +4559,8 @@
         "repo": "obra/superpowers",
         "path": "skills/verification-before-completion/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/verification-before-completion"
     },
     {
       "id": "writing-plans",
@@ -4565,7 +4593,8 @@
         "repo": "obra/superpowers",
         "path": "skills/writing-plans/SKILL.md",
         "last_synced": "2026-03-03"
-      }
+      },
+      "skills_sh_url": "https://skills.sh/obra/superpowers/writing-plans"
     }
   ],
   "categories": [
