@@ -1,21 +1,21 @@
 {
   "api-design-principles": {
-    "installs": "12.7K"
+    "installs": "12.8K"
   },
   "architecture-patterns": {
-    "installs": "9.7K"
+    "installs": "9.8K"
   },
   "error-handling-patterns": {
-    "installs": "6.6K"
+    "installs": "6.7K"
   },
   "nodejs-backend-patterns": {
-    "installs": "12.4K"
+    "installs": "12.5K"
   },
   "postgresql-table-design": {
-    "installs": "9.4K"
+    "installs": "9.5K"
   },
   "sql-optimization-patterns": {
-    "installs": "7.4K"
+    "installs": "7.5K"
   },
   "github-actions-templates": {
     "installs": "5.9K"
@@ -27,13 +27,13 @@
     "installs": "6.2K"
   },
   "python-performance-optimization": {
-    "installs": "12.6K"
+    "installs": "12.7K"
   },
   "python-testing-patterns": {
-    "installs": "10.2K"
+    "installs": "10.3K"
   },
   "code-review-excellence": {
-    "installs": "9.2K"
+    "installs": "9.3K"
   },
   "debugging-strategies": {
     "installs": "4.6K"
@@ -45,39 +45,39 @@
     "installs": "6.9K"
   },
   "typescript-advanced-types": {
-    "installs": "18.1K"
+    "installs": "18.3K"
   },
   "mermaid-diagrams": {
     "installs": "18.3K"
   },
   "frontend-design": {
-    "installs": "203.6K"
+    "installs": "207.1K"
   },
   "webapp-testing": {
-    "installs": "33.5K"
+    "installs": "33.9K"
   },
   "brainstorming": {
-    "installs": "74.4K"
+    "installs": "75.6K"
   },
   "executing-plans": {
-    "installs": "32.4K"
+    "installs": "32.9K"
   },
   "receiving-code-review": {
-    "installs": "26.0K"
+    "installs": "26.5K"
   },
   "requesting-code-review": {
-    "installs": "32.5K"
+    "installs": "33.1K"
   },
   "systematic-debugging": {
-    "installs": "40.9K"
+    "installs": "41.6K"
   },
   "test-driven-development": {
-    "installs": "34.3K"
+    "installs": "34.8K"
   },
   "verification-before-completion": {
-    "installs": "26.2K"
+    "installs": "26.7K"
   },
   "writing-plans": {
-    "installs": "39.7K"
+    "installs": "40.4K"
   }
 }
