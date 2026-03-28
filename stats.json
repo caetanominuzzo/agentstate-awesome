@@ -1,83 +1,83 @@
 {
   "api-design-principles": {
-    "installs": "12.8K"
+    "installs": "13.0K"
   },
   "architecture-patterns": {
-    "installs": "9.8K"
+    "installs": "9.9K"
   },
   "error-handling-patterns": {
-    "installs": "6.7K"
+    "installs": "6.8K"
   },
   "nodejs-backend-patterns": {
-    "installs": "12.5K"
-  },
-  "postgresql-table-design": {
-    "installs": "9.5K"
-  },
-  "sql-optimization-patterns": {
-    "installs": "7.5K"
-  },
-  "github-actions-templates": {
-    "installs": "5.9K"
-  },
-  "modern-javascript-patterns": {
-    "installs": "6.5K"
-  },
-  "async-python-patterns": {
-    "installs": "6.2K"
-  },
-  "python-performance-optimization": {
     "installs": "12.7K"
   },
+  "postgresql-table-design": {
+    "installs": "9.6K"
+  },
+  "sql-optimization-patterns": {
+    "installs": "7.6K"
+  },
+  "github-actions-templates": {
+    "installs": "6.0K"
+  },
+  "modern-javascript-patterns": {
+    "installs": "6.6K"
+  },
+  "async-python-patterns": {
+    "installs": "6.3K"
+  },
+  "python-performance-optimization": {
+    "installs": "12.8K"
+  },
   "python-testing-patterns": {
-    "installs": "10.3K"
+    "installs": "10.4K"
   },
   "code-review-excellence": {
-    "installs": "9.3K"
+    "installs": "9.5K"
   },
   "debugging-strategies": {
-    "installs": "4.6K"
+    "installs": "4.7K"
   },
   "e2e-testing-patterns": {
-    "installs": "8.7K"
+    "installs": "8.8K"
   },
   "javascript-testing-patterns": {
-    "installs": "6.9K"
+    "installs": "7.0K"
   },
   "typescript-advanced-types": {
-    "installs": "18.3K"
+    "installs": "18.5K"
   },
   "mermaid-diagrams": {
     "installs": "18.3K"
   },
   "frontend-design": {
-    "installs": "207.1K"
+    "installs": "211.5K"
   },
   "webapp-testing": {
-    "installs": "33.9K"
+    "installs": "34.6K"
   },
   "brainstorming": {
-    "installs": "75.6K"
+    "installs": "77.2K"
   },
   "executing-plans": {
-    "installs": "32.9K"
+    "installs": "33.7K"
   },
   "receiving-code-review": {
-    "installs": "26.5K"
+    "installs": "27.2K"
   },
   "requesting-code-review": {
-    "installs": "33.1K"
+    "installs": "34.0K"
   },
   "systematic-debugging": {
-    "installs": "41.6K"
+    "installs": "42.5K"
   },
   "test-driven-development": {
-    "installs": "34.8K"
+    "installs": "35.6K"
   },
   "verification-before-completion": {
-    "installs": "26.7K"
+    "installs": "27.4K"
   },
   "writing-plans": {
-    "installs": "40.4K"
+    "installs": "41.4K"
   }
 }
